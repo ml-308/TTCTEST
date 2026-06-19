@@ -1,0 +1,457 @@
+
+/*
+class HcwArticle extends HTMLElement{
+    constructor(){
+        super();
+        this.attactshadow({mode:"open"});
+    }
+
+    connectedCallback(){
+        this.render();
+        this.shadowRoot.addEventListener("click",this._handlerClick);
+        this.shadowRoot.addEventListener("input",this._handlerInput);
+    }
+
+    _handlerClick=(e)=>{
+        const target=e.target.closest("button");
+        if(!target){
+            return;
+        }
+
+        switch(target.id){
+            case "add-btn": this.addFrom(); break;
+            case "search-btn": this.searchFrom(); break;
+            case "back1": this.back1(); break;
+            case "cl1": this.cl1(); break;
+            case "back2": this.back2(); break;
+            case "cl2": this.cl2(); break;
+            case "submitAddBtn": this.submitAdd(); break;
+            case "resetAddBtn": this.resetAdd(); break;
+            default: break;
+        }
+    }
+
+    _handlerInput=(e)=>{
+        const target=e.target.closest("input");
+        if(!target){
+            return;
+        }
+
+        switch(target.id){
+            case "city": this.cityChange(); break;
+        }
+}
+}
+
+class HcwBodyHeader extends HTMLElement{
+    constructor(){
+        super();
+        this.attactshadow({mode:"open"});
+    }
+
+    connectedCallback(){
+        this.render();
+        this.shadowRoot.addEventListener("click",this._handlerClick_head);
+    } 
+
+    _handlerClick_head=(e)=>{
+        const target=e.target.closest("button");
+        if(!target){
+            return;
+        }
+
+        switch(target.id){
+            case "back": this.back(); break;
+            default: break;
+        }
+    }
+}
+*/
+
+let time1in,time2in;
+
+//输入补全
+function Complete(value,word){
+    value=value.replace(/\s+/g, ' ').trim()
+    if(!value) return null;
+    const a=value.indexOf(word);
+    if(a<0){
+        value=value+word;
+    }
+    return value;
+}
+
+//时间格式判断
+function timejudge(time){
+    if(time>=2400||time<0||time.length!=4||isNaN(time)||time%100>=60||time.length!=4||isNaN(time)||time%100>=60){
+        return false;
+    }
+    return true;
+}
+
+//时间格式转换
+function timeformat(time){
+    time=time.replace(/\s+/g, ' ').trim();
+    let timec=time.split(' ');
+    time="";
+    timec.sort();
+    let n=0;
+    for(let i=0;i<timec.length;i++){
+        let naw=timec[i];
+        if(i<=timec.length-2){
+            next=timec[i+1];
+        }
+        if(naw==" "||naw==""){
+            continue;
+        }
+        time+=naw.slice(0,2)+':'+naw.slice(2,4)+"\t";
+        n+=1;
+        if(n==5){
+            time+="\n";
+            n=0;
+        }
+    }
+
+    return time;
+
+
+}
+
+//执行时间检查
+function ex_timejudege(etime){
+    let timec = etime.split('.');
+    if(timec[0].length!=4){
+        timec[0]="20"+timec[0];
+    }
+
+    if(timec.length!=3||timec[0]<=0||timec[0].length!=4||timec[1]>12||timec[1]<1||timec[2]>31||timec[2]<1||timec[1].length>2||timec[2].length>2){
+        return false;
+    }
+    for(let i=0;i<timec.length;i++){
+        etime=timec[0]+"-"+timec[1]+"-"+timec[2];
+    }
+    return etime;
+}
+
+//提示框
+function msgout(input,test,msg,judge){
+    console.log("mag:"+msg);
+    if(judge==1){
+        console.log("msgout--1");
+        input.style.borderColor='#1eff01';
+        test.style.color='#1eff01';
+        test.innerHTML=msg;
+    }
+    if(judge==0){
+        console.log("msg--0");
+        input.style.borderColor='#ff0000';
+        test.style.color='#ff0000';
+        test.innerHTML=msg;
+        test.style.display="block";
+    }
+    if(judge==2){
+        console.log("msg--2");
+        input.style.borderColor='#8881';
+        test.style.color='#000000';
+        test.innerHTML=msg;
+        test.style.display="none";
+    }
+}
+
+//clean
+function cleaninput(input,inputtest,inputends){
+    console.log("clean input"+input);
+    inputtest.style.display="none";
+    input.style.borderColor="#8881";
+    input.value="";
+    inputend[inputends]="";
+}
+
+//show
+function show(input){
+    input.style.display="flex";
+    input.value="";
+}
+
+//按钮
+const backa=document.getElementById("back");
+const add=document.getElementById("add-btn");
+const search=document.getElementById("search-btn");
+//const time1b=document.getElementById("back1");
+const time1c=document.getElementById("cl1");
+//const time2b=document.getElementById("back2");
+const time2c=document.getElementById("cl2");
+const addconfirm=document.getElementById("submitAddBtn");
+const clean=document.getElementById("resetAddBtn");
+
+//输入框
+const city_input=document.getElementById("city");
+const way_input=document.getElementById("way");
+const start_input=document.getElementById("start");
+const end_input=document.getElementById("end");
+const time1_input=document.getElementById("time1");
+const time2_input=document.getElementById("time2");
+const bc_input=document.getElementById("bc");
+const e_time_input=document.getElementById("exec-time");
+
+//div
+const addDiv=document.getElementById("add-form");
+const searchDiv=document.getElementById("search-form");
+const time1Div=document.getElementById("time1b");
+const time2Div=document.getElementById("time2b");
+
+//提示框
+const citytest=document.getElementById("citytest");
+const waytest=document.getElementById("waytest");
+const starttest=document.getElementById("starttest");
+const endtest=document.getElementById("endtest");
+const time1test=document.getElementById("time1test");
+const time2test=document.getElementById("time2test");
+const bctest=document.getElementById("bctest");
+const e_timetest=document.getElementById("exec-timetest");
+
+let judge={
+    city:0,
+    way:0,
+    start:0,
+    end:0,
+    time1:0,
+    time2:0,
+    bc:0,
+    e_time:0,
+}
+
+let inputend={
+    city:"",
+    way:"",
+    start:"",
+    end:"",
+    time1:"",
+    time2:"",
+    bc:"",
+    e_time:"",
+}
+
+//btn
+backa.addEventListener("click", back);
+add.addEventListener("click", addForm);
+search.addEventListener("click", searchForm);
+time1c.addEventListener("click", time1cl);
+time2c.addEventListener("click", time2cl);
+addconfirm.addEventListener("click", confirmAdd);
+clean.addEventListener("click", cleanall);
+
+//input
+city_input.addEventListener("input", cityinput);
+way_input.addEventListener("input", wayinput);
+start_input.addEventListener("input", startinput);
+end_input.addEventListener("input", endinput);
+time1_input.addEventListener("input", time1input);
+time2_input.addEventListener("input", time2input);
+bc_input.addEventListener("input", bcinput);
+e_time_input.addEventListener("input", e_timeinput);
+
+const inputs=[city_input,way_input,start_input,end_input,time1_input,time2_input,bc_input,e_time_input];
+const tests=[citytest,waytest,starttest,endtest,time1test,time2test,bctest,e_timetest];
+
+
+function back(){
+    window.location.href="/index.html";
+    console.log('back事件触发');
+}
+
+function addForm(){
+    addDiv.classList.remove("hidden");
+    searchDiv.classList.add("hidden");
+    for(let i=0;i<inputs.length;i++){
+        show(inputs[i]);
+    }
+    console.log('add事件触发');
+}
+
+function searchForm(){
+    addDiv.classList.add("hidden");
+    searchDiv.classList.remove("hidden");
+    console.log('search事件触发');
+}
+
+
+function cityinput(){
+    console.log("city write")
+    const input=city_input.value;
+    let city=city_input.value;
+    city=Complete(city,"市");
+    if(city==null){
+        msgout(city_input,citytest,"请输入城市",0,input);
+    }
+    else{
+        inputend.city=city;
+        msgout(city_input,citytest,'"'+city+'"'+" 是合法城市",1);
+    }
+}
+
+function wayinput(){
+    console.log("way write")
+    const input=way_input.value;
+    let way=way_input.value;
+    way=Complete(way,"");
+    if(way==null){
+        msgout(way_input,waytest,"请输入线路",0,input);
+    }
+    else{
+        inputend.way=way;
+        msgout(way_input,waytest,'"'+way+'"'+" 是合法线路",1);
+    }
+}
+
+function startinput(){
+    console.log("start write")
+    const input=start_input.value;
+    let start=start_input.value;
+    start=Complete(start,"站");
+    if(start==null){
+        msgout(start_input,starttest,"请输入起点",0,input);
+    }
+    else{
+        inputend.start=start;
+        msgout(start_input,starttest,'"'+start+'"'+" 是合法起点",1);
+    }
+}
+function endinput(){
+    console.log("end write")
+    const input=end_input.value;
+    let end=end_input.value;
+    end=Complete(end,"站");
+    if(end==null){
+        msgout(end_input,endtest,"请输入终点",0,input);
+    }
+    else{
+        inputend.end=end;
+        msgout(end_input,endtest,'"'+end+'"'+" 是合法终点",1);
+    }
+}
+
+function time1input(){
+    console.log("time1 write")
+    const input=time1_input.value;
+    time1in=input;
+    let time=time1_input.value;
+    let err="";
+    time=time.replace(/\s+/g, ' ').trim();
+    let timec=time.split(' ');
+    time1Div.style.display="flex";
+    for(let i=0;i<timec.length;i++){
+        if(timejudge(timec[i])){
+            console.log("time1judge--1");
+        }
+        else if(timec[i]==" "){
+            continue;
+        }
+        else{
+            console.log("time1judge--0");
+            err+=timec[i]+" ";
+    
+        }
+    }
+    if(err.length>0&&err!=" "){
+        time1c.style.display="flex";
+        msgout(time1_input,time1test,"以下时间不合法："+err,0)
+    }
+    else if(timec.length==0||time==""||time==" "){
+        msgout(time1_input,time1test,"请输入时刻表",0);
+    }
+    else{
+        time1c.style.display="flex";
+        //time1b.style.display="flex";
+        inputend.time1=time;
+        msgout(time1_input,time1test,"时刻表合法",1);
+    }
+}
+
+function time2input(){     // 将函数名 time1input 改为 time2input
+    console.log("time2 write");   // 将 "time1 write" 改为 "time2 write"
+    const input=time2_input.value; // 将 time1_input 改为 time2_input
+    time2in=input;       // 将 time1in 改为 time2in
+    let time=time2_input.value;  // 将 time1_input 改为 time2_input
+    let err="";
+    time=time.replace(/\s+/g, ' ').trim();
+    let timec=time.split(' ');
+    time2Div.style.display="flex";
+    for(let i=0;i<timec.length;i++){
+        if(timejudge(timec[i])){
+            console.log("time2judge--1"); // 将 "time1judge--1" 改为 "time2judge--1"
+        }
+        else if(timec[i]==" "){
+            continue;
+        }
+        else{
+            console.log("time2judge--0"); // 将 "time1judge--0" 改为 "time2judge--0"
+            err+=timec[i]+" ";          
+        }
+    }
+    if(err.length>0&&err!=" "){
+        time2c.style.display="flex";
+        msgout(time2_input,time2test,"以下时间不合法："+err,0); // 将 time1_input 和 time1test 改为 time2_input 和 time2test
+    }
+    else if(timec.length==0||time==""||time==" "){
+        msgout(time2_input,time2test,"请输入时刻表",0); // 将 time1_input 和 time1test 改为 time2_input 和 time2test
+    }
+    else{
+        time2c.style.display="flex";
+        //time2b.style.display="flex";
+        inputend.time2=time;
+        msgout(time2_input,time2test,"时刻表合法",1); // 将 time1_input 和 time1test 改为 time2_input 和 time2test
+    }
+
+}
+
+function bcinput(){
+    console.log("bc write")
+    const input=bc_input.value;
+    let bc=bc_input.value;
+    bc=Complete(bc,")");
+    if(bc!=null){
+        bc="("+bc;
+        msgout(bc_input,bctest,'"'+bc+'"'+" ",1);
+    }
+    else{
+        msgout(bc_input,bctest,"",2);
+    }
+}
+
+function e_timeinput(){
+    console.log("e_time write")
+    const input=e_time_input.value;
+    let e_time=e_time_input.value;
+    e_time=ex_timejudege(e_time);
+    if(e_time!=false){
+        inputend.e_time=e_time;
+        msgout(e_time_input,e_timetest,e_time+" 是合法时间",1);
+    }
+    else{
+        msgout(e_time_input,e_timetest,input+" 不是合法时间",0);
+    }
+}
+
+function time1cl(){
+    cleaninput(time1_input,time1test,time1);
+    time1c.style.display="none";
+}
+
+function time2cl(){
+    cleaninput(time2_input,time2test,time2);
+    time2c.style.display="none";
+}
+
+function cleanall(){
+    for(let i=0;i<inputs.length;i++){
+        let inputendt=Object.keys(inputend)[i];      
+        cleaninput(inputs[i],tests[i],inputendt);
+    }
+    time1cl();
+    time2cl();
+}
+
+function confirmAdd(){
+
+}
