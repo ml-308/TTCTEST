@@ -450,13 +450,11 @@ function e_timeinput(){
 }
 
 function time1cl(){
-    cleaninput(time1_input,time1test,time1);
-    time1c.style.display="none";
+    cleaninput(time1_input,time1test,time1Div);
 }
 
 function time2cl(){
-    cleaninput(time2_input,time2test,time2);
-    time2c.style.display="none";
+    cleaninput(time2_input,time2test,time2Div);
 }
 
 function cleanall(){
@@ -465,6 +463,12 @@ function cleanall(){
     for(let i=0;i<values.length;i++){
         judge[i]=0;
     }
+    cleaninput(city_input,citytest,0);
+    cleaninput(way_input,waytest,0);
+    cleaninput(start_input,starttest,0);
+    cleaninput(end_input,endtest,0);
+    cleaninput(bc_input,bctest,0);
+    cleaninput(e_time_input,e_timetest,0);
     time1cl();
     time2cl();
 }
@@ -489,10 +493,10 @@ function confirmAdd(){
         }
     }
     console.log("judgeall--1");
-    addconfirm.disabled=true;
-    clean.disabled=true;
-    time1c.disabled=true;
-    time2c.disabled=true;
+    addconfirm.removeEventListener("click",confirmAdd);
+    time1c.removeEventListener("click", time1cl);
+    time2c.removeEventListener("click", time2cl);
+    clean.removeEventListener("click", cleanall);
     addconfirm.style.backgroundColor="#26bce1";
     let time=5;
     let a=setInterval(wait,1000);
@@ -503,7 +507,6 @@ function confirmAdd(){
                 addconfirm.disabled=false;
                 addconfirm.innerHTML="确认";
                 addconfirm.style.backgroundColor="#1eff01";
-                addconfirm.removeEventListener("click",confirmAdd);
                 addconfirm.addEventListener("click",addconfirmclick);
                 return;
             }
@@ -515,4 +518,6 @@ function confirmAdd(){
 function addconfirmclick(){
     console.log("addconfirmclick");
     addconfirm.removeEventListener("click",addconfirmclick);
+    window.location.href="/index.html";
+    console.log('addconfirmclick事件触发');
 }
