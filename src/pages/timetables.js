@@ -141,6 +141,7 @@ function msgout(input,test,msg,judge){
         input.style.borderColor='#1eff01';
         test.style.color='#1eff01';
         test.innerHTML=msg;
+        test.style.display="block";
     }
     if(judge==0){
         console.log("msg--0");
@@ -159,12 +160,15 @@ function msgout(input,test,msg,judge){
 }
 
 //clean
-function cleaninput(input,inputtest,inputends){
+function cleaninput(input,inputtest,btn){
     console.log("clean input"+input);
     inputtest.style.display="none";
     input.style.borderColor="#8881";
     input.value="";
-    inputend[inputends]="";
+    if(btn!=0){
+        btn.style.display="none";
+    }
+
 }
 
 //show
@@ -217,20 +221,10 @@ let judge={
     end:0,
     time1:0,
     time2:0,
-    bc:0,
+    bc:1,
     e_time:0,
 }
 
-let inputend={
-    city:"",
-    way:"",
-    start:"",
-    end:"",
-    time1:"",
-    time2:"",
-    bc:"",
-    e_time:"",
-}
 
 //btn
 backa.addEventListener("click", back);
@@ -253,6 +247,13 @@ e_time_input.addEventListener("input", e_timeinput);
 
 const inputs=[city_input,way_input,start_input,end_input,time1_input,time2_input,bc_input,e_time_input];
 const tests=[citytest,waytest,starttest,endtest,time1test,time2test,bctest,e_timetest];
+
+addconfirm.disabled=false;
+clean.disabled=false;
+time1c.disabled=false;
+time2c.disabled=false;
+console.log("SUCCSSS")
+
 
 
 function back(){
@@ -282,10 +283,11 @@ function cityinput(){
     let city=city_input.value;
     city=Complete(city,"市");
     if(city==null){
+        judge.city=0;
         msgout(city_input,citytest,"请输入城市",0,input);
     }
     else{
-        inputend.city=city;
+        judge.city=1;
         msgout(city_input,citytest,'"'+city+'"'+" 是合法城市",1);
     }
 }
@@ -296,10 +298,11 @@ function wayinput(){
     let way=way_input.value;
     way=Complete(way,"");
     if(way==null){
+        judge.way=0;
         msgout(way_input,waytest,"请输入线路",0,input);
     }
     else{
-        inputend.way=way;
+        judge.way=1;
         msgout(way_input,waytest,'"'+way+'"'+" 是合法线路",1);
     }
 }
@@ -310,10 +313,11 @@ function startinput(){
     let start=start_input.value;
     start=Complete(start,"站");
     if(start==null){
+        judge.start=0;
         msgout(start_input,starttest,"请输入起点",0,input);
     }
     else{
-        inputend.start=start;
+        judge.start=1;
         msgout(start_input,starttest,'"'+start+'"'+" 是合法起点",1);
     }
 }
@@ -323,10 +327,11 @@ function endinput(){
     let end=end_input.value;
     end=Complete(end,"站");
     if(end==null){
+        judge.end=0;
         msgout(end_input,endtest,"请输入终点",0,input);
     }
     else{
-        inputend.end=end;
+        judge.end=1;
         msgout(end_input,endtest,'"'+end+'"'+" 是合法终点",1);
     }
 }
@@ -354,16 +359,18 @@ function time1input(){
         }
     }
     if(err.length>0&&err!=" "){
+        judge.time1=0;
         time1c.style.display="flex";
         msgout(time1_input,time1test,"以下时间不合法："+err,0)
     }
     else if(timec.length==0||time==""||time==" "){
+        judge.time1=0;
         msgout(time1_input,time1test,"请输入时刻表",0);
     }
     else{
+        judge.time1=1;
         time1c.style.display="flex";
         //time1b.style.display="flex";
-        inputend.time1=time;
         msgout(time1_input,time1test,"时刻表合法",1);
     }
 }
@@ -390,16 +397,18 @@ function time2input(){     // 将函数名 time1input 改为 time2input
         }
     }
     if(err.length>0&&err!=" "){
+        judge.time2=0;
         time2c.style.display="flex";
         msgout(time2_input,time2test,"以下时间不合法："+err,0); // 将 time1_input 和 time1test 改为 time2_input 和 time2test
     }
     else if(timec.length==0||time==""||time==" "){
+        judge.time2=0;
         msgout(time2_input,time2test,"请输入时刻表",0); // 将 time1_input 和 time1test 改为 time2_input 和 time2test
     }
     else{
+        judge.time2=1;
         time2c.style.display="flex";
         //time2b.style.display="flex";
-        inputend.time2=time;
         msgout(time2_input,time2test,"时刻表合法",1); // 将 time1_input 和 time1test 改为 time2_input 和 time2test
     }
 
@@ -417,18 +426,25 @@ function bcinput(){
     else{
         msgout(bc_input,bctest,"",2);
     }
+    judge.bc=1;
 }
 
 function e_timeinput(){
     console.log("e_time write")
     const input=e_time_input.value;
     let e_time=e_time_input.value;
+    if(e_time==""){
+        judge.e_time=0;
+        msgout(e_time_input,e_timetest,"请输入执行时间",0);
+        return;
+    }
     e_time=ex_timejudege(e_time);
     if(e_time!=false){
-        inputend.e_time=e_time;
+        judge.e_time=1;
         msgout(e_time_input,e_timetest,e_time+" 是合法时间",1);
     }
     else{
+        judge.e_time=0;
         msgout(e_time_input,e_timetest,input+" 不是合法时间",0);
     }
 }
@@ -444,14 +460,59 @@ function time2cl(){
 }
 
 function cleanall(){
-    for(let i=0;i<inputs.length;i++){
-        let inputendt=Object.keys(inputend)[i];      
-        cleaninput(inputs[i],tests[i],inputendt);
+    console.log("clean all");
+    const values=Object.values(judge);
+    for(let i=0;i<values.length;i++){
+        judge[i]=0;
     }
     time1cl();
     time2cl();
 }
 
 function confirmAdd(){
+    cityinput();
+    wayinput();
+    startinput();
+    endinput();
+    time1input();
+    time2input();
+    bcinput();
+    e_timeinput();
+    console.log("confirm add");
+    const values=Object.values(judge);
+    for(let i=0;i<values.length;i++){
+        if(values[i]==0){
+            console.log("judgeall--0");
+            addconfirm.innerHTML="输入有误请修改";
+            addconfirm.style.backgroundColor="#ff0000";
+            return;
+        }
+    }
+    console.log("judgeall--1");
+    addconfirm.disabled=true;
+    clean.disabled=true;
+    time1c.disabled=true;
+    time2c.disabled=true;
+    addconfirm.style.backgroundColor="#26bce1";
+    let time=5;
+    let a=setInterval(wait,1000);
+    function wait(){
+            time--;
+            if(time==0){
+                clearInterval(a);
+                addconfirm.disabled=false;
+                addconfirm.innerHTML="确认";
+                addconfirm.style.backgroundColor="#1eff01";
+                addconfirm.removeEventListener("click",confirmAdd);
+                addconfirm.addEventListener("click",addconfirmclick);
+                return;
+            }
+            addconfirm.innerHTML="再次点击以确认"+time;
+            console.log(time);
+    }
+}
 
+function addconfirmclick(){
+    console.log("addconfirmclick");
+    addconfirm.removeEventListener("click",addconfirmclick);
 }
