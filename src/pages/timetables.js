@@ -1,3 +1,4 @@
+import { showConfirm, showPrompt } from '/lib/ui/popup.mjs';
 
 /*
 class HcwArticle extends HTMLElement{
@@ -98,9 +99,6 @@ function timeformat(time){
     let n=0;
     for(let i=0;i<timec.length;i++){
         let naw=timec[i];
-        if(i<=timec.length-2){
-            next=timec[i+1];
-        }
         if(naw==" "||naw==""){
             continue;
         }
@@ -473,7 +471,7 @@ function cleanall(){
     time2cl();
 }
 
-function confirmAdd(){
+async function confirmAdd(){
     cityinput();
     wayinput();
     startinput();
@@ -498,26 +496,46 @@ function confirmAdd(){
     time2c.removeEventListener("click", time2cl);
     clean.removeEventListener("click", cleanall);
     addconfirm.style.backgroundColor="#26bce1";
-    let time=5;
-    let a=setInterval(wait,1000);
-    function wait(){
-            time--;
-            if(time==0){
-                clearInterval(a);
-                addconfirm.disabled=false;
-                addconfirm.innerHTML="确认";
-                addconfirm.style.backgroundColor="#1eff01";
-                addconfirm.addEventListener("click",addconfirmclick);
-                return;
-            }
-            addconfirm.innerHTML="再次点击以确认"+time;
-            console.log(time);
-    }
+    let msg=write(1);
+    console.log(msg);
+    console.log("msgout--1");
+    /*
+    const result=await showConfirm({
+        text:"确认添加",
+        buttons:["确认","取消"],
+        button_style:['variant=success',""]
+    });
+*/
+    const inputvalue=await showPrompt({
+        text:"确认上传",
+        buttons:["确认","取消"],
+        button_style:['variant=success',""],
+        input_is_area:true,
+        input_attrs:{readonly:true,value:msg},
+    });
+    
+
 }
 
-function addconfirmclick(){
-    console.log("addconfirmclick");
-    addconfirm.removeEventListener("click",addconfirmclick);
-    window.location.href="/index.html";
-    console.log('addconfirmclick事件触发');
+function write(choose){
+    const name="test";
+    const city=city_input.value;
+    const way=way_input.value;
+    const start=start_input.value;
+    const end=end_input.value;
+    const time1=timeformat(time1_input.value);
+    const time2=timeformat(time2_input.value);
+    const bc=bc_input.value;
+    const e_time=ex_timejudege(e_time_input.value);
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = ('0' + (now.getMonth() + 1)).slice(-2);
+    const day = ('0' + now.getDate()).slice(-2);
+    const writetime = year +"-"+ month +"-"+ day ;
+    console.log(writetime);
+    let msg="";
+    if(choose==1){
+        msg="城市："+city+"\n线路："+way+"\n起点："+start+"\n终点："+end+"\n主站->副站时刻表："+time1+"\n副站->主站时刻表："+time2+"\n执行时间："+e_time+"\n"+"写入时间："+writetime+"\n作者:"+name;
+        return msg;
+    }
 }
