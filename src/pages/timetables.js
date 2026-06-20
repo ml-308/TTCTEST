@@ -594,7 +594,7 @@ function write(choose){
 
 async function writeD1(city,way,start,end,time1,time2,bc,etime,writetime,name){
             const data={
-            "ID":"114514",
+            "id":"114514",
             "city":city,
             "way":way,
             "start":start,
