@@ -36,7 +36,7 @@ if (!writer || typeof writer !== "string" || writer.trim().length === 0) {
         return new Response(JSON.stringify({error: "error writer"}), {status: 400});
     }
 
-return new Response(JSON.stringify({log:"success"}),{status:200});
+return new Response(JSON.stringify({error:"error"}),{status:200});
 
 try{
     const result=await env.mlttcd.prepare(
