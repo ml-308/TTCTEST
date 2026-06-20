@@ -575,9 +575,9 @@ async function confirmAdd(){
     }
     console.log("pass");
     showMessage("添加成功", false);
+    write(2);
     cleanall();
     addDiv.classList.add("hidden");
-    write(2);
 }
 
 function write(choose){
@@ -602,6 +602,7 @@ function write(choose){
         return msg;
     }
     if(choose==2){
+        console.log("data:",city);
         writeD1(city,way,start,end,time1,time2,bc,e_time,writetime,name);
     }
 }
@@ -620,7 +621,7 @@ async function writeD1(city,way,start,end,time1,time2,bc,etime,writetime,name){
             "writetime":writetime,
             "writer":name
         };
-        console.log("data:",typeof (e_time));
+        console.log("data:",city," ",way," ",start," ",end," ",time1," ",time2," ",bc," ",etime," ",writetime," ",name);
         const response = await fetch("/api/timetable-D1",{
             method:"POST",
             headers:{'Content-Type':"application/json"},
