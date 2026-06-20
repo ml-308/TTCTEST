@@ -7,11 +7,10 @@ export async function onRequestPost({request,env}){
         });
     }
     const {id,city,way,start,end,special,time1,time2,etime,writer}=body;
-/*
 if(!id||typeof id!=="string"||id.trim().length===0){
     return new Response(JSON.stringify({error:"error ID"}),{status:400});
 }
-*/
+
 if (!city || typeof city !== "string" || city.trim().length === 0) {
         return new Response(JSON.stringify({error: "error city"}), {status: 400});
     }
@@ -31,6 +30,12 @@ if (!time2 || typeof time2 !== "string" || time2.trim().length === 0) {
         return new Response(JSON.stringify({error: "error time2"}), {status: 400});
     }
 if (!etime || typeof etime !== "string" || etime.trim().length === 0) {
+    if(!etime){
+        return new Response(JSON.stringify({error: "error etime by undefined"}), {status: 400});
+    }
+    if(!typeof etime!=="string"){
+        return new Response(JSON.stringify({error: "error etime by not string"}), {status: 400});
+    }
         return new Response(JSON.stringify({error: "error etime"}), {status: 400});
     }
 if (!writer || typeof writer !== "string" || writer.trim().length === 0) {

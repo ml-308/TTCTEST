@@ -606,7 +606,7 @@ async function writeD1(city,way,start,end,time1,time2,bc,e_time,writetime,name){
             "writetime":writetime,
             "name":name
         };
-
+        console.log("data:",typeof (e_time));
         const response = await fetch("/api/timetable-D1",{
             method:"POST",
             headers:{'Content-Type':"application/json"},
