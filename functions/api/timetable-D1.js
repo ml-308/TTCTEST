@@ -52,7 +52,7 @@ if (!special || typeof special !== "string" || special.trim().length === 0) {
 
 try{
     const result=await env.mlttcd.prepare(
-        `INSERT INTO TIMETABLE (ID,CITY,WAY,START,END,SPECIAL,TIMEONE,TIMETWO,STARTTIME,WRITER,WRITERTIME,PASSER) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`
+        `INSERT INTO TIMETABLE (ID,CITY,WAY,START,END,SPECIAL,TIMEONE,TIMETWO,STARTTIME,WRITER,WRITETIME,PASSER) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`
     ).bind(id.trim(),city.trim(),way.trim(),start.trim(),end.trim(),specialvalue.trim(),time1.trim(),time2.trim(),etime.trim(),writer.trim(),writetime.trim(),"-")
      .run();
 
