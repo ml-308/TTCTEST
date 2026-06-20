@@ -12,7 +12,7 @@ if(!id||typeof id!=="string"||id.trim().length===0){
 }
 
 if (!city || typeof city !== "string" || city.trim().length === 0) {
-        return new Response(JSON.stringify({error: "error city"}), {status: 400});
+        return new Response(JSON.stringify({error: "error city"+city}), {status: 400});
     }
 if (!way || typeof way !== "string" || way.trim().length === 0) {
         return new Response(JSON.stringify({error: "error way"}), {status: 400});
