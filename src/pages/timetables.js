@@ -175,6 +175,37 @@ function show(input){
     input.value="";
 }
 
+//showmsg
+function showMessage(msg, isError) {
+  const box = document.getElementById('errormsg');
+  if (box) {
+    box.textContent = msg;
+    box.style.display = 'block';
+    box.style.color = isError ? 'red' : 'green';
+  }
+  const popup = document.createElement('div');
+  popup.textContent = msg;
+  popup.style = 'position:fixed; top:20px; left:50%; padding:10px 20px; border-radius:5px; z-index:9999; color:#fff; font-size:0.85rem; animation: fadeInOut 2s ease forwards;';
+  popup.style.backgroundColor = isError ? '#f44336' : '#4CAF50';
+  document.body.appendChild(popup);
+  setTimeout(() => popup.remove(), 2000);
+  
+  // 注入动画关键帧（仅一次）
+  if (!document.getElementById('showMsgAnimStyles')) {
+    const styleSheet = document.createElement('style');
+    styleSheet.id = 'showMsgAnimStyles';
+    styleSheet.textContent = `
+      @keyframes fadeInOut {
+        0%   { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+        15%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+        85%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+        100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+      }
+    `;
+    document.head.appendChild(styleSheet);
+  }
+}
+
 //按钮
 const backa=document.getElementById("back");
 const add=document.getElementById("add-btn");
@@ -288,6 +319,7 @@ function cityinput(){
         judge.city=1;
         msgout(city_input,citytest,'"'+city+'"'+" 是合法城市",1);
     }
+    console.log(judge.city);
 }
 
 function wayinput(){
@@ -460,6 +492,7 @@ function cleanall(){
     const values=Object.values(judge);
     for(let i=0;i<values.length;i++){
         judge[i]=0;
+        console.log(i+"=="+values[i]);
     }
     cleaninput(city_input,citytest,0);
     cleaninput(way_input,waytest,0);
@@ -483,8 +516,11 @@ async function confirmAdd(){
     console.log("confirm add");
     const values=Object.values(judge);
     for(let i=0;i<values.length;i++){
+        console.log(i+"--"+values[i]);
+    }
+    for(let i=0;i<values.length;i++){
         if(values[i]==0){
-            console.log("judgeall--0");
+            console.log("judgeall--0"+values[i]);
             addconfirm.innerHTML="输入有误请修改";
             addconfirm.style.backgroundColor="#ff0000";
             return;
@@ -513,8 +549,21 @@ async function confirmAdd(){
         input_is_area:true,
         input_attrs:{readonly:true,value:msg},
     });
-    
-
+    console.log(inputvalue);
+    console.log(msg);
+    if(inputvalue!=msg){
+        addconfirm.addEventListener("click",confirmAdd);
+        time1c.addEventListener("click", time1cl);
+        time2c.addEventListener("click", time2cl);
+        clean.addEventListener("click", cleanall);
+        console.log("cancel or change");
+        showMessage("取消或修改", true);
+        return;
+    }
+    console.log("pass");
+    showMessage("添加成功", false);
+    addDiv.classList.add("hidden");
+    write(2);
 }
 
 function write(choose){
@@ -538,4 +587,31 @@ function write(choose){
         msg="城市："+city+"\n线路："+way+"\n起点："+start+"\n终点："+end+"\n主站->副站时刻表："+time1+"\n副站->主站时刻表："+time2+"\n执行时间："+e_time+"\n"+"写入时间："+writetime+"\n作者:"+name;
         return msg;
     }
+    if(choose==2){
+        writeD1(city,way,start,end,time1,time2,bc,e_time,writetime,name);
+    }
 }
+
+async function writeD1(city,way,start,end,time1,time2,bc,e_time,writetime,name){
+            const data={
+            "city":city,
+            "way":way,
+            "start":start,
+            "end":end,
+            "time1":time1,
+            "time2":time2,
+            "bc":bc,
+            "e_time":e_time,
+            "writetime":writetime,
+            "name":name
+        };
+
+        const response = await fetch("functions/api/timetable-D1.js",{
+            method:"POST",
+            headers:{'Content-Type':"application/json"},
+            body:JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        console.log("back:",result);
+        }
