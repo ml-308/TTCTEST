@@ -7,10 +7,11 @@ export async function onRequestPost({request,env}){
         });
     }
     const {id,city,way,start,end,special,time1,time2,etime,writer}=body;
+/*
 if(!id||typeof id!=="string"||id.trim().length===0){
     return new Response(JSON.stringify({error:"error ID"}),{status:400});
 }
-
+*/
 if (!city || typeof city !== "string" || city.trim().length === 0) {
         return new Response(JSON.stringify({error: "error city"}), {status: 400});
     }
