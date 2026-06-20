@@ -35,8 +35,9 @@ if (!etime || typeof etime !== "string" || etime.trim().length === 0) {
 if (!writer || typeof writer !== "string" || writer.trim().length === 0) {
         return new Response(JSON.stringify({error: "error writer"}), {status: 400});
     }
-
-return new Response(JSON.stringify({error:"error"}),{status:200});
+if (!special || typeof special !== "string" || special.trim().length === 0) {
+        special="无";
+}
 
 try{
     const result=await env.mlttcd.prepare(
