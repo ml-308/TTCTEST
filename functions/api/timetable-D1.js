@@ -1,4 +1,4 @@
-export async function OnrequestPost({request,env}){
+export async function onRequestPost({request,env}){
     const body = await request.json().catch(()=>null);
     if(!body){
         return new Response(JSON.stringify({error:"Invalid request body"}),{
@@ -41,7 +41,7 @@ return new Response(JSON.stringify({log:"success"}),{status:200});
 try{
     const result=await env.mlttcd.prepare(
         `INSERT INTO TIMETABLE (ID,CITY,WAY,START,END,SPECIAL,TIMEONE,TIMETWO,STARTTIME,WRITER,WRITERTIME,PASSER) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`
-    ).bind(id.trim(),city.trim(),way.trim(),start.trim(),end.trim(),special.trim(),time1.trim(),time2.trim(),start.trim(),writer.trim(),writer.trim(),"-")
+    ).bind(id.trim(),city.trim(),way.trim(),start.trim(),end.trim(),special.trim(),time1.trim(),time2.trim(),etime.trim(),writer.trim(),"-")
      .run();
 
      return new Response(JSON.stringify({success:true,result: result.meta.last_row_id,message:"success"}),{status:201,headers:{'Content-Type':"application/json"}});
