@@ -592,7 +592,7 @@ function write(choose){
     }
 }
 
-async function writeD1(city,way,start,end,time1,time2,bc,e_time,writetime,name){
+async function writeD1(city,way,start,end,time1,time2,bc,etime,writetime,name){
             const data={
             "ID":"114514",
             "city":city,
@@ -602,7 +602,7 @@ async function writeD1(city,way,start,end,time1,time2,bc,e_time,writetime,name){
             "time1":time1,
             "time2":time2,
             "bc":bc,
-            "e_time":e_time,
+            "etime":e_time,
             "writetime":writetime,
             "name":name
         };
