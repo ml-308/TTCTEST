@@ -6,9 +6,7 @@ export async function OnrequestPost({request,env}){
             headers:{'Content-Type':"application/json"}
         });
     }
-}
-
-const {id,city,way,start,end,special,time1,time2,etime,writer}=body;
+    const {id,city,way,start,end,special,time1,time2,etime,writer}=body;
 if(!id||typeof id!=="string"||id.trim().length===0){
     return new Response(JSON.stringify({error:"error ID"}),{status:400});
 }
@@ -49,3 +47,5 @@ try{
 }catch(err){
     return new Response(JSON.stringify({error:"D1 error"}),{status:500});
 }
+}
+
