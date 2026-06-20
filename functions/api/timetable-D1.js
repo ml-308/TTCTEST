@@ -57,8 +57,15 @@ try{
      .run();
 
      return new Response(JSON.stringify({success:true,result: result.meta.last_row_id,message:"success"}),{status:201,headers:{'Content-Type':"application/json"}});
-}catch(err){
-    return new Response(JSON.stringify({error:"D1 error"}),{status:500});
+} catch (err) {
+    return new Response(JSON.stringify({
+        error: "D1 error",
+        detail: err.message,   // ← 添加错误详情
+        stack: err.stack
+    }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+    });
 }
 }
 
