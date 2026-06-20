@@ -6,7 +6,7 @@ export async function onRequestPost({request,env}){
             headers:{'Content-Type':"application/json"}
         });
     }
-    const {id,city,way,start,end,special,time1,time2,etime,writer}=body;
+    const {id,city,way,start,end,special,time1,time2,etime,writetime,writer}=body;
 if(!id||typeof id!=="string"||id.trim().length===0){
     return new Response(JSON.stringify({error:"error ID"}),{status:400});
 }
@@ -41,6 +41,10 @@ if (!etime || typeof etime !== "string" || etime.trim().length === 0) {
 if (!writer || typeof writer !== "string" || writer.trim().length === 0) {
         return new Response(JSON.stringify({error: "error writer"}), {status: 400});
     }
+if (!writetime || typeof writetime !== "string" || writetime.trim().length === 0) {
+        return new Response(JSON.stringify({error: "error writetime"}), {status: 400});
+    }
+
 const specialvalue=special;
 if (!special || typeof special !== "string" || special.trim().length === 0) {
         const specialvalue="无";
@@ -49,7 +53,7 @@ if (!special || typeof special !== "string" || special.trim().length === 0) {
 try{
     const result=await env.mlttcd.prepare(
         `INSERT INTO TIMETABLE (ID,CITY,WAY,START,END,SPECIAL,TIMEONE,TIMETWO,STARTTIME,WRITER,WRITERTIME,PASSER) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`
-    ).bind(id.trim(),city.trim(),way.trim(),start.trim(),end.trim(),specialvalue.trim(),time1.trim(),time2.trim(),etime.trim(),writer.trim(),"-")
+    ).bind(id.trim(),city.trim(),way.trim(),start.trim(),end.trim(),specialvalue.trim(),time1.trim(),time2.trim(),etime.trim(),writer.trim(),writetime.trim(),"-")
      .run();
 
      return new Response(JSON.stringify({success:true,result: result.meta.last_row_id,message:"success"}),{status:201,headers:{'Content-Type':"application/json"}});
