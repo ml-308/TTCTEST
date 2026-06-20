@@ -602,7 +602,7 @@ async function writeD1(city,way,start,end,time1,time2,bc,etime,writetime,name){
             "time1":time1,
             "time2":time2,
             "bc":bc,
-            "etime":e_time,
+            "etime":etime,
             "writetime":writetime,
             "name":name
         };
