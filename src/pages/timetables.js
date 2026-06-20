@@ -206,6 +206,13 @@ function showMessage(msg, isError) {
   }
 }
 
+//生成12位随机字符串
+function generate12DigitString() {
+  return Array.from(crypto.getRandomValues(new Uint8Array(12)))
+    .map(byte => byte % 10)
+    .join('');
+}
+
 //按钮
 const backa=document.getElementById("back");
 const add=document.getElementById("add-btn");
@@ -297,6 +304,13 @@ function addForm(){
         show(inputs[i]);
     }
     console.log('add事件触发');
+    backa.addEventListener("click", back);
+    add.addEventListener("click", addForm);
+    search.addEventListener("click", searchForm);
+    time1c.addEventListener("click", time1cl);
+    time2c.addEventListener("click", time2cl);
+    addconfirm.addEventListener("click", confirmAdd);
+    clean.addEventListener("click", cleanall);
 }
 
 function searchForm(){
@@ -531,7 +545,6 @@ async function confirmAdd(){
     time1c.removeEventListener("click", time1cl);
     time2c.removeEventListener("click", time2cl);
     clean.removeEventListener("click", cleanall);
-    addconfirm.style.backgroundColor="#26bce1";
     let msg=write(1);
     console.log(msg);
     console.log("msgout--1");
@@ -562,6 +575,7 @@ async function confirmAdd(){
     }
     console.log("pass");
     showMessage("添加成功", false);
+    cleanall();
     addDiv.classList.add("hidden");
     write(2);
 }
@@ -594,7 +608,7 @@ function write(choose){
 
 async function writeD1(city,way,start,end,time1,time2,bc,etime,writetime,name){
             const data={
-            "id":"114514",
+            "id":generate12DigitString(),
             "city":city,
             "way":way,
             "start":start,
