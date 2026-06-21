@@ -686,7 +686,7 @@ async function searchById(){
     console.log("search by id");
     const id=searchid.value;
     try{
-        const res=await fetch(`/api/timetable-D1?id=${id}`);
+        const res=await fetch(`/api/timetable-D1?id=${id}&city='0'&way='0'`);
         let msg;
         const data=await res.json();
         if(data.success==false){
