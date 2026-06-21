@@ -649,11 +649,15 @@ const searchcity=document.getElementById("search-city");
 const searchway=document.getElementById("search-way");
 const searchid=document.getElementById("search-id");
 
-//input k
+/*
+const searchDiv=document.getElementById("search-form");
+const searchDiv2=document.getElementById("search-form2");
+*/
+/*
 searchcity.addEventListener("input", searchcityinput);
 searchway.addEventListener("input", searchwayinput);
 searchid.addEventListener("input", searchidinput);
-
+*/
 //btn k
 searchbtn.addEventListener("click", searchbtnClick);
 searchclean.addEventListener("click", searchcleanClick);
