@@ -1,3 +1,4 @@
+//Post
 export async function onRequestPost({request,env}){
     const body = await request.json().catch(()=>null);
     if(!body){
@@ -69,3 +70,60 @@ try{
 }
 }
 
+//Get
+export async function onRequestGet({request,env}){
+    const url=new URL(request.url);
+    const city=url.searchParams.get("city");
+    const way=url.searchParams.get("way");
+    const id=url.searchParams.get("id");
+
+    if (!city || typeof city !== "string" || city.trim().length === 0) {
+        return new Response(JSON.stringify({error: "error city"}), {status: 400});
+    }
+    if (!way || typeof way !== "string" || way.trim().length === 0) {
+        return new Response(JSON.stringify({error: "error way"}), {status: 400});
+    }
+    if(!id || typeof id !== "string" || id.trim().length === 0){
+        return new Response(JSON.stringify({error: "error id"}), {status: 400});
+    }
+    if(id!=0){
+        try{
+            const result=await env.mlttcd.prepare(
+                `SELECT * FROM TIMETABLE WHERE ID=?`
+            ).bind(id.trim())
+            .all();
+            if(result.length===0){
+                return new Response(JSON.stringify({
+                    success:false,
+                })),{status:200,headers:{'Content-Type':"application/json"}};
+            }
+            return new Response(JSON.stringify({success:true,result: result.result}),{status:200,headers:{'Content-Type':"application/json"}});
+        } catch (err) {
+            return new Response(JSON.stringify({
+                error: "D1 error",
+                detail: err.message,   // ← 添加错误详情
+                stack: err.stack
+            }), {
+                status: 500,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+    }
+
+    try{
+        const result=await env.mlttcd.prepare(
+            `SELECT * FROM TIMETABLE WHERE CITY=? AND WAY=?`
+        ).bind(city.trim(),way.trim())
+        .all();
+
+        return new Response(JSON.stringify({success:true,result: result.result,message:"success"}),{status:200,headers:{'Content-Type':"application/json"}});
+    } catch (err) {
+        return new Response(JSON.stringify({
+            error: "D1 error",
+            detail: err.message,   // ← 添加错误详情
+            stack: err.stack
+        }), {
+            status: 500,
+    });
+}
+}

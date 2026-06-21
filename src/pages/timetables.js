@@ -97,6 +97,7 @@ function timeformat(time){
     time="";
     timec.sort();
     let n=0;
+    //let time="99999";
     for(let i=0;i<timec.length;i++){
         let naw=timec[i];
         if(naw==" "||naw==""){
@@ -108,6 +109,7 @@ function timeformat(time){
             time+="\n";
             n=0;
         }
+        //next=timec[i];
     }
 
     return time;
@@ -503,11 +505,16 @@ function time2cl(){
 
 function cleanall(){
     console.log("clean all");
-    const values=Object.values(judge);
-    for(let i=0;i<values.length;i++){
-        judge[i]=0;
-        console.log(i+"=="+values[i]);
-    }
+    judge={
+    city:0,
+    way:0,
+    start:0,
+    end:0,
+    time1:0,
+    time2:0,
+    bc:1,
+    e_time:0,
+}
     cleaninput(city_input,citytest,0);
     cleaninput(way_input,waytest,0);
     cleaninput(start_input,starttest,0);
@@ -560,7 +567,7 @@ async function confirmAdd(){
         buttons:["确认","取消"],
         button_style:['variant=success',""],
         input_is_area:true,
-        input_attrs:{readonly:true,value:msg},
+        input_attrs:{readonly:true,value:msg}
     });
     console.log(inputvalue);
     console.log(msg);
@@ -631,3 +638,75 @@ async function writeD1(city,way,start,end,time1,time2,bc,etime,writetime,name){
         const result = await response.json();
         console.log("back:",result);
         }
+
+//search
+//btn
+const searchbtn=document.getElementById("submitSearchBtn");
+const searchclean=document.getElementById("clearSearchBtn");
+
+//input
+const searchcity=document.getElementById("search-city");
+const searchway=document.getElementById("search-way");
+const searchid=document.getElementById("search-id");
+
+//input k
+searchcity.addEventListener("input", searchcityinput);
+searchway.addEventListener("input", searchwayinput);
+searchid.addEventListener("input", searchidinput);
+
+//btn k
+searchbtn.addEventListener("click", searchbtnClick);
+searchclean.addEventListener("click", searchcleanClick);
+
+function searchcleanClick(){
+    console.log("search clean");
+    searchcity.value="";
+    searchway.value="";
+    searchid.value="";
+}
+
+function searchbtnClick(){
+    console.log("search btn");
+    const city=searchcity.value;
+    const way=searchway.value;
+    const id=searchid.value;
+    if(id){
+        searchById();
+    }
+    else{
+        searchByCityWay();
+    }
+}
+
+async function searchById(){
+    console.log("search by id");
+    const id=searchid.value;
+    try{
+        const res=await fetch(`/api/timetable-D1?id=${id}`);
+        let msg;
+        const data=await res.json();
+        if(data.success==false){
+            const error=await res.json();
+            console.log("error:",error);
+            showMessage("找不到数据", true);
+            return;
+        }
+        for(let i=0;i<data.length;i++){
+            msg+=data[i];
+        }
+        console.log("data:",data,"\nmsg:",msg);
+        showMessage("搜索成功", false);
+        const inputvalue=await showPrompt({
+            text:"查询数据",
+            buttons:["关闭"],
+            button_style:['variant=success'],
+            input_is_area:true,
+            input_attrs:{readonly:true,value:msg}
+    });
+    }
+    catch(e){
+        const err=await res.json();
+        console.log("error:",err);
+        showMessage("服务器错误", true);
+    }
+}
