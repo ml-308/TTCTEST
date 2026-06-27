@@ -685,6 +685,10 @@ function searchbtnClick(){
 async function searchById(){
     console.log("search by id");
     const id=searchid.value;
+    if(id.length!=12){
+        showMessage("id错误", true);
+        return;
+    }
     try{
         const res=await fetch(`/api/timetable-D1?id=${id}&city='0'&way='0'`);
         let msg;
@@ -695,9 +699,7 @@ async function searchById(){
             showMessage("找不到数据", true);
             return;
         }
-        for(let i=0;i<data.length;i++){
-            msg+=data[i];
-        }
+        msg="城市："+data[city]+"线路："+data[way]+"起点："+data[start]+"终点："+data[end]+"备注："+data[bc]+"主站->副站时刻表："+data[time1]+"副站->主站时刻表："+data[time2]+"执行时间："+data[etime]+"写入时间："+data[writetime]+"作者："+data[writer];
         console.log("data:",data,"\nmsg:",msg);
         showMessage("搜索成功", false);
         const inputvalue=await showPrompt({
