@@ -694,8 +694,7 @@ async function searchById(){
         let msg;
         const data=await res.json();
         if(data.success==false){
-            const error=await res.json();
-            console.log("error:",error);
+            console.log("error:",data.detail);
             showMessage("找不到数据", true);
             return;
         }
@@ -711,8 +710,7 @@ async function searchById(){
     });
     }
     catch(e){
-        const err=await e.json();
-        console.log("error:",err);
+        console.log("error:",e);
         showMessage("服务器错误", true);
     }
 }
