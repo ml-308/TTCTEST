@@ -698,7 +698,7 @@ async function searchById(){
             showMessage("找不到数据", true);
             return;
         }
-        msg="城市："+data.CITY+"线路："+data.WAY+"起点："+data.START+"终点："+data.END+"备注："+data.SPECIAL+"主站->副站时刻表："+data.TIMEONE+"副站->主站时刻表："+data.TIMETWO+"执行时间："+data.STARTTIME+"写入时间："+data.WRITETIME+"作者："+data.WRITER;
+        msg="城市："+data.result.CITY+"线路："+data.result.WAY+"起点："+data.result.START+"终点："+data.result.END+"备注："+data.result.SPECIAL+"主站->副站时刻表："+data.result.TIMEONE+"副站->主站时刻表："+data.result.TIMETWO+"执行时间："+data.result.STARTTIME+"写入时间："+data.result.WRITETIME+"作者："+data.result.WRITER;
         console.log("data:",data,"\nmsg:",msg);
         showMessage("搜索成功", false);
         const inputvalue=await showPrompt({
