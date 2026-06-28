@@ -16,10 +16,6 @@ export async function onRequestGet({ request, env }) {
         headers: { 'Content-Type': 'application/json' }
       });
     }
-
-    return new Response(JSON.stringify({ key, value }), {
-      headers: { 'Content-Type': 'application/json' }
-    });
       return new Response(JSON.stringify({success: true,message:"邮箱正确且可以注册",value:value,way:1}),{
         status: 200,
         headers: { 'Content-Type': 'application/json' }
