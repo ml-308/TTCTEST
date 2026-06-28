@@ -187,7 +187,9 @@ function refisterbtnclick(){
     passinput();
     passwordinput();
     passwordconfirminput();
+    console.log(judge);
     if(judge.email!=1||judge.pass!=1||judge.password!=1||judge.passwordconfirm!=1){
+        console.log('error');
         return;
     }
     const email=email.value;
