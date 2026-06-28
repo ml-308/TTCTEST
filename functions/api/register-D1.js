@@ -1,5 +1,3 @@
-import bcrypt from 'bcryptjs';
-
 // 生成12位安全随机数字字符串
 function generate12DigitString() {
   const array = new Uint32Array(3);
@@ -9,6 +7,59 @@ function generate12DigitString() {
     num += String(array[i] % 10000).padStart(4, '0');
   }
   return num;
+}
+
+// 将密码转换为哈希（PBKDF2 + 随机盐）
+async function hashPassword(password) {
+  const encoder = new TextEncoder();
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const key = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(password),
+    'PBKDF2',
+    false,
+    ['deriveBits']
+  );
+  const derivedBits = await crypto.subtle.deriveBits(
+    {
+      name: 'PBKDF2',
+      salt: salt,
+      iterations: 100000,
+      hash: 'SHA-256'
+    },
+    key,
+    256
+  );
+  // 将 salt 和 derivedBits 合并为一个字符串存储
+  const saltHex = Array.from(salt).map(b => b.toString(16).padStart(2, '0')).join('');
+  const hashHex = Array.from(new Uint8Array(derivedBits)).map(b => b.toString(16).padStart(2, '0')).join('');
+  return `${saltHex}:${hashHex}`;
+}
+
+// 验证密码（登录时使用）
+async function verifyPassword(password, storedHash) {
+  const [saltHex, originalHashHex] = storedHash.split(':');
+  const salt = new Uint8Array(saltHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(password),
+    'PBKDF2',
+    false,
+    ['deriveBits']
+  );
+  const derivedBits = await crypto.subtle.deriveBits(
+    {
+      name: 'PBKDF2',
+      salt: salt,
+      iterations: 100000,
+      hash: 'SHA-256'
+    },
+    key,
+    256
+  );
+  const newHashHex = Array.from(new Uint8Array(derivedBits)).map(b => b.toString(16).padStart(2, '0')).join('');
+  return newHashHex === originalHashHex;
 }
 
 // 检查邮箱是否已注册（GET 请求）
@@ -24,14 +75,13 @@ export async function onRequestGet({ request, env }) {
   }
 
   try {
-    // 注意：D1 返回的是 { results: [...] }
     const { results } = await env.mlttcd.prepare(
       'SELECT * FROM USER WHERE email = ?'
     ).bind(email.trim().toLowerCase()).all();
 
     if (results.length > 0) {
       return new Response(JSON.stringify({ success: false, message: '邮箱已存在' }), {
-        status: 409,  // 冲突状态码更合适
+        status: 409,
         headers: { 'Content-Type': 'application/json' }
       });
     }
@@ -67,7 +117,7 @@ export async function onRequestPost({ request, env }) {
       });
     }
 
-    // 邮箱格式校验（可选）
+    // 邮箱格式校验
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.trim())) {
       return new Response(JSON.stringify({ success: false, message: '邮箱格式不正确' }), {
@@ -98,9 +148,8 @@ export async function onRequestPost({ request, env }) {
       idExists = !!existingId;
     }
 
-    // 密码哈希（加盐10轮）
-    const salt = bcrypt.genSaltSync(10);
-    const hashedPassword = bcrypt.hashSync(password, salt);
+    // 密码哈希（使用 Web Crypto）
+    const hashedPassword = await hashPassword(password);
 
     // 插入新用户
     await env.mlttcd.prepare(
@@ -110,7 +159,7 @@ export async function onRequestPost({ request, env }) {
       id,
       email.trim().toLowerCase(),
       hashedPassword,
-      '-',               // 默认城市
+      '-',
       new Date().toISOString()
     ).run();
 
