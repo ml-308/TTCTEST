@@ -27,8 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // 目标时间：2028年6月7日 00:00:00（月份从0开始，5代表6月）
-const targetDate = new Date(2028, 5, 7, 0, 0, 0);
-
+const targetDate = new Date(2028, 5, 7, 8, 0, 0);
+const timer=document.getElementById('time');
 // 倒计时更新函数
 function updateCountdown() {
   const now = new Date();
@@ -36,7 +36,7 @@ function updateCountdown() {
 
   if (diff <= 0) {
     // 倒计时结束，显示提示并停止定时器（可选）
-    document.getElementById('time').textContent = '🎉 高考已开始！';
+    timer.textContent = '🎉 高考已开始！';
     return;
   }
 
@@ -49,7 +49,7 @@ function updateCountdown() {
   // 格式化输出（补零）
   const display = `${days}天 ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 
-  document.getElementById('time').innerHTML = display;
+  timer.textContent ="距离高考还有："+ display;
   console.log(display);
 }
 
