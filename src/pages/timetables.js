@@ -1,5 +1,5 @@
 import { showConfirm, showPrompt } from '/lib/ui/popup.mjs';
-
+let name;
 /*
 class HcwArticle extends HTMLElement{
     constructor(){
@@ -601,28 +601,24 @@ async function confirmAdd(){
     addDiv.classList.add("hidden");
 }
 
-async function getUsername() {
-  const res = await fetch('/api/profile', { credentials: 'include' });
-  if (res.ok) {
-    const data = await res.json();
-    const user = data.user || data;
-    return user.email;
+async function fetchUserInfo() {
+  try {
+    const res = await fetch('/api/profile', { credentials: 'include' });
+    if (res.ok) {
+      const data = await res.json();
+      name= data.email; 
+    }
+    else{
+        name=null;
+    }
+  } catch {
+    name= null;
   }
-  return null;
 }
 
+
 function write(choose){
-    getUsername().then(user => {
-        if (user) {
-            const name = user.email;
-        } else {
-            showMessage("请先登录", true);
-            return;
-        }
-    }).catch(() => {
-        showMessage("请先登录", true);
-        return;
-    });
+    const name1=name;
     const city=Complete(city_input.value,"市");
     const way=Complete(way_input.value,"路");
     const start=Complete(start_input.value,"站");
@@ -639,12 +635,12 @@ function write(choose){
     console.log(writetime);
     let msg="";
     if(choose==1){
-        msg="城市："+city+"\n线路："+way+"\n起点："+start+"\n终点："+end+"\n主站->副站时刻表："+time1+"\n副站->主站时刻表："+time2+"\n执行时间："+e_time+"\n"+"写入时间："+writetime+"\n作者:"+name;
+        msg="城市："+city+"\n线路："+way+"\n起点："+start+"\n终点："+end+"\n主站->副站时刻表："+time1+"\n副站->主站时刻表："+time2+"\n执行时间："+e_time+"\n"+"写入时间："+writetime+"\n作者:"+name1;
         return msg;
     }
     if(choose==2){
         console.log("data:",city);
-        writeD1(city,way,start,end,time1,time2,bc,e_time,writetime,name);
+        writeD1(city,way,start,end,time1,time2,bc,e_time,writetime,name1);
     }
 }
 
