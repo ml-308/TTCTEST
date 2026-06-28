@@ -115,7 +115,11 @@ export async function onRequestGet({request,env}){
             `SELECT * FROM TIMETABLE WHERE CITY=? AND WAY=?`
         ).bind(city.trim(),way.trim())
         .all();
-
+        if(result.results.length===0){
+            return new Response(JSON.stringify({
+                success:false,
+            })),{status:404,headers:{'Content-Type':"application/json"}};
+        }
         return new Response(JSON.stringify({success:true,result: result.result,message:"success"}),{status:200,headers:{'Content-Type':"application/json"}});
     } catch (err) {
         return new Response(JSON.stringify({

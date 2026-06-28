@@ -720,3 +720,34 @@ async function searchById(){
         showMessage("服务器错误", true);
     }
 }
+
+async function searchByCityWay(){
+    console.log("search by city way");
+    const city=Complete(searchcity.value,"市");
+    const way=searchway.value;
+    try{
+        const res=await fetch(`/api/timetable-D1?city=${city}&way=${way}&id='0'`);
+        if(res.status==500){
+            const errData = await res.json().catch(() => ({}));
+            console.log("error:",errData.detail);
+            showMessage("找不到数据", true);
+            return;
+        }
+        let msg;
+        const data=await res.json();
+        msg="城市："+data.result.CITY+"\n线路："+data.result.WAY+"\n起点："+data.result.START+"\n终点："+data.result.END+"\n备注："+data.result.SPECIAL+"\n主站->副站时刻表："+data.result.TIMEONE+"\n副站->主站时刻表："+data.result.TIMETWO+"\n执行时间："+data.result.STARTTIME+"\n写入时间："+data.result.WRITETIME+"\n作者："+data.result.WRITER;
+        console.log("data:",data,"\nmsg:",msg);
+        showMessage("搜索成功", false);
+        const inputvalue=await showPrompt({
+            text:"查询数据",
+            buttons:["关闭"],
+            button_style:['variant=success'],
+            input_is_area:true,
+            input_attrs:{readonly:true,value:msg}
+    });
+    }
+    catch(e){
+        console.log("error:",e);
+        showMessage("服务器错误", true);
+    }
+}
