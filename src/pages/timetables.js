@@ -618,7 +618,12 @@ async function fetchUserInfo() {
 
 
 function write(choose){
+    fetchUserInfo();
     const name1=name;
+    if(name1==null){
+        showMessage("请先登录", true);
+        return;
+    }
     const city=Complete(city_input.value,"市");
     const way=Complete(way_input.value,"路");
     const start=Complete(start_input.value,"站");
