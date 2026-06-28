@@ -110,22 +110,31 @@ function emailinput(){
     if(back!='邮箱格式正确'){
         judge.email=1;
         msgout(email,emailmsg,0,email+back);
+        emailp(email);
     }
-    const res=await fetch(`functions/api/KV.js?key=${email}`);
+    else{
+        judge.email=0;
+        msgout(email,emailmsg,1,email+back);
+    }
+
+}
+
+async function emailp(email1){
+    const res=await fetch(`functions/api/KV.js?key=${email1}`);
     const data=await res.json();
-    const re=await fetch(`functions/api/register-D1.js?email=${email}`);
+    const re=await fetch(`functions/api/register-D1.js?email=${email1}`);
     const dat=await re.json();
     if(!re.ok){
         const dat=await re.json();
-        msgout(email,emailmsg,0,email+back+","+dat.message);
+        msgout(email,emailmsg,0,email1+back+","+dat.message);
     }
     else{
         if(!res.ok){        
         const dat=await res.json();
-        msgout(email,emailmsg,data.way,email+back+","+dat.message);
+        msgout(email,emailmsg,data.way,email1+back+","+dat.message);
     }
         else{
-            msgout(email,emailmsg,1,email+back+","+dat.message);
+            msgout(email,emailmsg,1,email1+back+","+dat.message);
             input.key=data.value;
     }
 }
