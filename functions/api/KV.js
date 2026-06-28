@@ -9,7 +9,7 @@ export async function onRequestGet({ request, env }) {
       });
     }
 
-    const value = await env.myKV.get(key);
+    const value = await env.mlttckv.get(key);
     if (value === null) {
       return new Response(JSON.stringify({ message: '邮箱正确但没有注册权限' ,way:2}), {
         status: 404,
