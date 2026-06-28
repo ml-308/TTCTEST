@@ -7,6 +7,7 @@
     <title>注册</title>
     <link rel="stylesheet" href="style/register.css">
     <script src="register.js" type="module"></script>
+    <script src="functions/api/KV.js" type="module"></script>
 </head>
 
 <body>
@@ -45,9 +46,6 @@
                     <input hcw-input type="password" id="passwordconfirm" placeholder="请再次输入密码" autocomplete="new-password" required
                         >
                     <p id="passwordconfirmMsg" class='LP' style="display: none;"></p>
-                </div>
-                <div id="ErrorRegister" class="error-msg" style="display:none;">
-                    <p>用户名或密码错误，请重新输入</p>
                 </div>
                 <br>
                 <button hcw-button primary flat style="min-width: 8rem;" type="submit" id="registerbtn">注 册</button>
