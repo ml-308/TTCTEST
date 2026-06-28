@@ -677,8 +677,11 @@ function searchbtnClick(){
     if(id){
         searchById();
     }
-    else{
+    else if(city&&way){
         searchByCityWay();
+    }
+    else{
+        showMessage("请输入搜索条件", true);
     }
 }
 
