@@ -211,6 +211,5 @@ async function writeD1(email,password){
     }
     else{
         showMessage(dat.message,0);
-        window.location.href='index.html';
     }
 }
