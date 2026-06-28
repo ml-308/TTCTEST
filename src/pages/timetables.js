@@ -640,7 +640,16 @@ async function writeD1(city,way,start,end,time1,time2,bc,etime,writetime,name){
     let exists = true;
     while (exists) {
         id = generateSecure12Digit();
-        const existing = await env.DB.prepare('SELECT id FROM TIMETABLE WHERE id = ?').bind(id).first();
+        const re=await fetch(`/api/timetable-D1?id=${encodeURIComponent(id)}`);
+        if (!re.ok) {
+            const errData = await re.json().catch(() => ({ message: '请求失败' }));
+            showMessage(errData.message || errData.error || '请求失败', true);
+            return;
+        }
+        const existing = await re.json();
+        if(existing && existing.length !== 0&&existing.success){
+            continue;
+        }
         exists = !!existing;
     }
     const data={
@@ -657,7 +666,7 @@ async function writeD1(city,way,start,end,time1,time2,bc,etime,writetime,name){
     "writer":name
 }
     console.log("data:",city," ",way," ",start," ",end," ",time1," ",time2," ",bc," ",etime," ",writetime," ",name);
-    const res=await fetch(`/api/timetable-D1?id=${encodeURIComponent(city)}&way=${encodeURIComponent(way)}`);
+    const res=await fetch(`/api/timetable-D1?city=${encodeURIComponent(city)}&way=${encodeURIComponent(way)}`);
         if (!res.ok) {
             const errData = await res.json().catch(() => ({ message: '请求失败' }));
             showMessage(errData.message || errData.error || '请求失败', true);
