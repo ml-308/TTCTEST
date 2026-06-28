@@ -171,7 +171,7 @@ function passwordinput(){
 
 function passwordconfirminput(){
     const pass=passwordconfirm.value;
-    if(pass!=pass.value){
+    if(pass!=password.value){
         judge.passwordconfirm=0;
         msgout(passwordconfirm,passwordconfirmmsg,0,'两次密码输入不一致');
     }
@@ -205,6 +205,7 @@ async function writeD1(email,password){
   })
 });
     const data=await res.json();
+    console.log(data);
     if(!res.ok){
         showMessage(dat.message,1);
     }
