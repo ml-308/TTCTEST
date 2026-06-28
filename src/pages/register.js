@@ -120,9 +120,9 @@ function emailinput(){
 }
 
 async function emailp(email1){
-    const res=await fetch(`functions/api/KV.js?key=${email1}`);
+    const res=await fetch(`/api/KV.js?key=${email1}`);
     const data=await res.json();
-    const re=await fetch(`functions/api/register-D1.js?email=${email1}`);
+    const re=await fetch(`/api/register-D1.js?email=${email1}`);
     const dat=await re.json();
     if(!re.ok){
         const dat=await re.json();
@@ -196,7 +196,7 @@ function refisterbtnclick(){
 }
 
 async function writeD1(email,password){
-    const res=await fetch(`functions/api/register-D1.js?email=${email}&password=${password}`);
+    const res=await fetch(`/api/register-D1.js?email=${email}&password=${password}`);
     const data=await res.json();
     if(!res.ok){
         const dat=await res.json();
