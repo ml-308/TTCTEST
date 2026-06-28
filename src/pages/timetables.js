@@ -612,10 +612,17 @@ async function getUsername() {
 }
 
 function write(choose){
-    const name=getUsername();
-    if(!name){
+    getUsername().then(user => {
+        if (user) {
+            const name = user.email;
+        } else {
+            showMessage("请先登录", true);
+            return;
+        }
+    }).catch(() => {
         showMessage("请先登录", true);
-    }
+        return;
+    });
     const city=Complete(city_input.value,"市");
     const way=Complete(way_input.value,"路");
     const start=Complete(start_input.value,"站");
