@@ -71,6 +71,21 @@ class HcwBodyHeader extends HTMLElement{
 
 let time1in,time2in;
 
+async function fetchUserInfo() {
+  try {
+    const res = await fetch('/api/profile', { credentials: 'include' });
+    if (res.ok) {
+      const data = await res.json();
+      name= data.email; 
+    }
+    else{
+        name=null;
+    }
+  } catch {
+    name= null;
+  }
+}
+
 //输入补全
 function Complete(value,word){
     value=value.replace(/\s+/g, ' ').trim()
@@ -540,6 +555,12 @@ function cleanall(){
 }
 
 async function confirmAdd(){
+    fetchUserInfo();
+    const name1=name;
+    if(name1==null){
+        showMessage("请先登录", true);
+        return;
+    }
     cityinput();
     wayinput();
     startinput();
@@ -601,20 +622,7 @@ async function confirmAdd(){
     addDiv.classList.add("hidden");
 }
 
-async function fetchUserInfo() {
-  try {
-    const res = await fetch('/api/profile', { credentials: 'include' });
-    if (res.ok) {
-      const data = await res.json();
-      name= data.email; 
-    }
-    else{
-        name=null;
-    }
-  } catch {
-    name= null;
-  }
-}
+
 
 
 function write(choose){
