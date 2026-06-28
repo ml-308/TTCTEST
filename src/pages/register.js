@@ -129,10 +129,10 @@ async function emailp(email1,back){
     }
     else{
         if(!res.ok){        
-        msgout(email,emailmsg,data.way,email1+back+","+dat.message);
+        msgout(email,emailmsg,data.way,email1+back+","+data.message);
     }
         else{
-            msgout(email,emailmsg,1,email1+back+","+dat.message);
+            msgout(email,emailmsg,1,email1+back+","+data.message);
             input.key=data.value;
     }
 }
@@ -144,7 +144,7 @@ function passinput(){
         judge.pass=0;
         msgout(pass,passmsg,0,'您没有注册权限');
     }
-    if(passin==judeg.key){
+    if(passin==judge.key){
         judge.pass=1;
         msgout(pass,passmsg,1,'注册码正确');
     }
@@ -194,7 +194,14 @@ function refisterbtnclick(){
 }
 
 async function writeD1(email,password){
-    const res=await fetch(`/api/register-D1?email=${email}&password=${password}`);
+    const res = await fetch('/api/register-D1', {
+        method: 'POST',
+        heaers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+        email: email,
+        password: password
+  })
+});
     const data=await res.json();
     if(!res.ok){
         showMessage(dat.message,1);
