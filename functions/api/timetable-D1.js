@@ -93,7 +93,7 @@ export async function onRequestGet({request,env}){
                 `SELECT * FROM TIMETABLE WHERE ID=?`
             ).bind(id.trim())
             .all();
-            if(result.results.length===0){
+            if(result.result.length===0){
                 return new Response(JSON.stringify({
                     success:false,
                 })),{status:404,headers:{'Content-Type':"application/json"}};
@@ -105,7 +105,7 @@ export async function onRequestGet({request,env}){
                 detail: err.message,   // ← 添加错误详情
                 stack: err.stack
             }), {
-                status: 504,
+                status: 500,
                 headers: { 'Content-Type': 'application/json' }
             });
         }
@@ -117,7 +117,7 @@ export async function onRequestGet({request,env}){
             `SELECT * FROM TIMETABLE WHERE CITY=? AND WAY=?`
         ).bind(city.trim(),way.trim())
         .all();
-        if(result.results.length===0){
+        if(result.result.length===0){
             return new Response(JSON.stringify({
                 success:false,
             })),{status:404,headers:{'Content-Type':"application/json"}};

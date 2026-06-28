@@ -728,7 +728,7 @@ async function searchByCityWay(){
     console.log("city:",city,"way:",way);
     try{
         const res=await fetch(`/api/timetable-D1?city=${city}&way=${way}&id='0'`);
-        if(res.status==500){
+        if(res.status==404){
             const errData = await res.json().catch(() => ({}));
             console.log("error:",errData.detail);
             showMessage("找不到数据", true);
