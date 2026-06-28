@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const globalLoginBtn = document.getElementById('globalLoginBtn');
   const globalLogoutBtn = document.getElementById('globalLogoutBtn');
   const loginModalBtn = document.getElementById('login-btn');      // 弹窗中的“登录”按钮
-  const closeBtn = document.getElementById('close_login_btn');
+  const closeBtn = document.getElementById('closeModalBtn');
   const usernameInput = document.getElementById('username');
   const passwordInput = document.getElementById('password');
   const globalLoginModal = document.getElementById('globalLoginModal');
@@ -25,6 +25,38 @@ document.addEventListener('DOMContentLoaded', () => {
     globalLogoutBtn.addEventListener('click', logout);
   }
 });
+
+// 目标时间：2028年6月7日 00:00:00（月份从0开始，5代表6月）
+const targetDate = new Date(2028, 5, 7, 0, 0, 0);
+
+// 倒计时更新函数
+function updateCountdown() {
+  const now = new Date();
+  const diff = targetDate - now; // 毫秒差
+
+  if (diff <= 0) {
+    // 倒计时结束，显示提示并停止定时器（可选）
+    document.getElementById('time').textContent = '🎉 高考已开始！';
+    return;
+  }
+
+  // 计算天、时、分、秒
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+  // 格式化输出（补零）
+  const display = `${days}天 ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+  document.getElementById('time').innerHTML = display;
+  console.log(display);
+}
+
+// 立即执行一次，避免首屏空白
+updateCountdown();
+// 每秒更新
+setInterval(updateCountdown, 1000);
 
 // ================== 工具函数 ==================
 
@@ -72,10 +104,10 @@ function loginshow() {
   const loginBtn = document.getElementById('globalLoginBtn');
   const logoutBtn = document.getElementById('globalLogoutBtn');
   const closeBtn = document.getElementById('close_login_btn');
-  if (modal) modal.style.display = 'block';
+  if (modal) modal.style.display = 'flex';
   if (loginBtn) loginBtn.style.display = 'none';
   if (logoutBtn) logoutBtn.style.display = 'none';
-  if (closeBtn) closeBtn.style.display = 'block';
+  if (closeBtn) closeBtn.style.display = 'flex';
 }
 
 function closeLogin() {
@@ -84,7 +116,7 @@ function closeLogin() {
   const logoutBtn = document.getElementById('globalLogoutBtn');
   const closeBtn = document.getElementById('close_login_btn');
   if (modal) modal.style.display = 'none';
-  if (loginBtn) loginBtn.style.display = 'block';
+  if (loginBtn) loginBtn.style.display = 'flex';
   if (logoutBtn) logoutBtn.style.display = 'none';
   if (closeBtn) closeBtn.style.display = 'none';
 }
@@ -165,3 +197,34 @@ async function logout() {
   await fetch('/api/logout-D1', { credentials: 'include' });
   window.location.href = '/login.html';
 }
+
+// 目标时间：2028年6月7日 00:00:00（月份从0开始，5代表6月）
+const targetDate = new Date(2028, 5, 7, 0, 0, 0);
+
+// 倒计时更新函数
+function updateCountdown() {
+  const now = new Date();
+  const diff = targetDate - now; // 毫秒差
+
+  if (diff <= 0) {
+    // 倒计时结束，显示提示并停止定时器（可选）
+    document.getElementById('countdown').textContent = '🎉 高考已开始！';
+    return;
+  }
+
+  // 计算天、时、分、秒
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+  // 格式化输出（补零）
+  const display = `${days}天 ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+  document.getElementById('time').textContent = display;
+}
+
+// 立即执行一次，避免首屏空白
+updateCountdown();
+// 每秒更新
+setInterval(updateCountdown, 1000);
