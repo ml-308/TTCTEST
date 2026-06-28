@@ -93,11 +93,6 @@ export async function onRequestGet({request,env}){
                 `SELECT * FROM TIMETABLE WHERE ID=?`
             ).bind(id.trim())
             .all();
-            if(result.result.length===0){
-                return new Response(JSON.stringify({
-                    success:false,
-                })),{status:404,headers:{'Content-Type':"application/json"}};
-            }
             return new Response(JSON.stringify({success:true,result: result.results[0]}),{status:200,headers:{'Content-Type':"application/json"}});
         } catch (err) {
             return new Response(JSON.stringify({
@@ -117,12 +112,7 @@ export async function onRequestGet({request,env}){
             `SELECT * FROM TIMETABLE WHERE CITY=? AND WAY=?`
         ).bind(city.trim(),way.trim())
         .all();
-        if(result.result.length===0){
-            return new Response(JSON.stringify({
-                success:false,
-            })),{status:404,headers:{'Content-Type':"application/json"}};
-        }
-        return new Response(JSON.stringify({success:true,result: result.result,message:"success"}),{status:200,headers:{'Content-Type':"application/json"}});
+        return new Response(JSON.stringify({success:true,result: result.results[0],message:"success"}),{status:200,headers:{'Content-Type':"application/json"}});
     } catch (err) {
         return new Response(JSON.stringify({
             error: "D1 error",
