@@ -589,10 +589,10 @@ async function confirmAdd(){
 
 function write(choose){
     const name="test";
-    const city=city_input.value;
+    const city=Complete(city_input.value,"市");
     const way=way_input.value;
-    const start=start_input.value;
-    const end=end_input.value;
+    const start=Complete(start_input.value,"站");
+    const end=Complete(end_input.value,"站");
     const time1=timeformat(time1_input.value);
     const time2=timeformat(time2_input.value);
     const bc=bc_input.value;
@@ -725,6 +725,7 @@ async function searchByCityWay(){
     console.log("search by city way");
     const city=Complete(searchcity.value,"市");
     const way=searchway.value;
+    console.log("city:",city,"way:",way);
     try{
         const res=await fetch(`/api/timetable-D1?city=${city}&way=${way}&id='0'`);
         if(res.status==500){
