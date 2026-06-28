@@ -76,53 +76,61 @@ export async function onRequestGet({request,env}){
     const city=url.searchParams.get("city");
     const way=url.searchParams.get("way");
     const id=url.searchParams.get("id");
+  if (id && id !== '0') {
+    console.log("按 ID 查询");
+    try {
+      const { results } = await env.mlttcd.prepare(
+        'SELECT * FROM TIMETABLE WHERE ID = ?'
+      ).bind(id.trim()).all();
 
-    if (!city || typeof city !== "string" || city.trim().length === 0) {
-        return new Response(JSON.stringify({error: "error city"}), {status: 400});
-    }
-    if (!way || typeof way !== "string" || way.trim().length === 0) {
-        return new Response(JSON.stringify({error: "error way"}), {status: 400});
-    }
-    if(!id || typeof id !== "string" || id.trim().length === 0){
-        return new Response(JSON.stringify({error: "error id"}), {status: 400});
-    }
-    if(id!='0'){
-        console.log("ID");
-        try{
-            const result=await env.mlttcd.prepare(
-                `SELECT * FROM TIMETABLE WHERE ID=?`
-            ).bind(id.trim())
-            .all();
-            return new Response(JSON.stringify({success:true,result: result.results[0]}),{status:200,headers:{'Content-Type':"application/json"}});
-        } catch (err) {
-            return new Response(JSON.stringify({
-                error: "D1 error",
-                detail: err.message,   // ← 添加错误详情
-                stack: err.stack
-            }), {
-                status: 500,
-                headers: { 'Content-Type': 'application/json' }
-            });
-        }
-    }
-    if(city!='0' && way!='0'){
-        console.log("city and way");
-    try{
-        const result=await env.mlttcd.prepare(
-            `SELECT * FROM TIMETABLE WHERE CITY=? AND WAY=?`
-        ).bind(city.trim(),way.trim())
-        .all();
-        return new Response(JSON.stringify({success:true,result: result.results[0],message:"success"}),{status:200,headers:{'Content-Type':"application/json"}});
-    } catch (err) {
+      if (results.length === 0) {
         return new Response(JSON.stringify({
-            error: "D1 error",
-            detail: err.message,   // ← 添加错误详情
-            stack: err.stack
-        }), {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' }
-    });
+          success: false,
+          message: '未找到该记录'
+        }), { status: 404, headers: { 'Content-Type': 'application/json' } });
+      }
+
+      return new Response(JSON.stringify({
+        success: true,
+        data: results[0]          
+      }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    } catch (err) {
+      return new Response(JSON.stringify({ error: '服务器内部错误' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  }
+
+  if (city && city !== '0' && way && way !== '0') {
+    console.log("按城市+线路查询");
+    try {
+      const { results } = await env.mlttcd.prepare(
+        'SELECT * FROM TIMETABLE WHERE CITY = ? AND WAY = ?'
+      ).bind(city.trim(), way.trim()).all();
+
+      if (results.length === 0) {
+        return new Response(JSON.stringify({
+          success: false,
+          message: '未找到符合条件的时刻表'
+        }), { status: 404, headers: { 'Content-Type': 'application/json' } });
+      }
+
+      return new Response(JSON.stringify({
+        success: true,
+        data: results      
+      }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    } catch (err) {
+      return new Response(JSON.stringify({ error: '服务器内部错误' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  }
+
+  return new Response(JSON.stringify({
+    success: false,
+    message: '请提供 id 或 city+way 参数'
+  }), { status: 400, headers: { 'Content-Type': 'application/json' } });
 }
-}
-    return new Response(JSON.stringify({success:false,message:"error"}), {status: 400});
-}
+

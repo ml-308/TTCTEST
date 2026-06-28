@@ -689,57 +689,107 @@ async function searchById(){
         showMessage("id错误", true);
         return;
     }
-    try{
-        const res=await fetch(`/api/timetable-D1?id=${id}&city='0'&way='0'`);
-        let msg;
-        const data=await res.json();
-        if(!data.result){
-            showMessage("找不到数据", true);
+async function searchById() {
+    console.log("search by id");
+    const id = searchid.value.trim();
+    if (id.length !== 12) {
+        showMessage("ID错误", true);
+        return;
+    }
+
+    try {
+        const res = await fetch(`/api/timetable-D1?id=${encodeURIComponent(id)}`);
+
+        if (!res.ok) {
+            const errData = await res.json().catch(() => ({ message: '请求失败' }));
+            showMessage(errData.message || errData.error || '请求失败', true);
             return;
         }
-        msg="城市："+data.result.CITY+"\n线路："+data.result.WAY+"\n起点："+data.result.START+"\n终点："+data.result.END+"\n备注："+data.result.SPECIAL+"\n主站->副站时刻表："+data.result.TIMEONE+"\n副站->主站时刻表："+data.result.TIMETWO+"\n执行时间："+data.result.STARTTIME+"\n写入时间："+data.result.WRITETIME+"\n作者："+data.result.WRITER;
-        console.log("data:",data,"\nmsg:",msg);
+
+        const data = await res.json();
+
+        if (!data.success || !data.data) {
+            showMessage(data.message || '找不到数据', true);
+            return;
+        }
+
+        const item = data.data; 
+
+        const msg = `城市：${item.CITY}\n` +
+                    `线路：${item.WAY}\n` +
+                    `起点：${item.START}\n` +
+                    `终点：${item.END}\n` +
+                    `备注：${item.SPECIAL || '无'}\n` +
+                    `主站→副站：${item.TIMEONE}\n` +
+                    `副站→主站：${item.TIMETWO}\n` +
+                    `执行时间：${item.STARTTIME}\n` +
+                    `写入时间：${item.WRITERTIME}\n` +
+                    `作者：${item.WRITER}`;
+
+        console.log("查询成功:", msg);
         showMessage("搜索成功", false);
-        const inputvalue=await showPrompt({
-            text:"查询数据",
-            buttons:["关闭"],
-            button_style:['variant=success'],
-            input_is_area:true,
-            input_attrs:{readonly:true,value:msg}
-    });
-    }
-    catch(e){
-        console.log("error:",e);
+
+        await showPrompt({
+            text: "查询数据",
+            buttons: ["关闭"],
+            button_style: ['variant=success'],
+            input_is_area: true,
+            input_attrs: { readonly: true, value: msg }
+        });
+
+    } catch (e) {
+        console.error("请求异常:", e);
         showMessage("服务器错误", true);
     }
 }
+}
 
-async function searchByCityWay(){
+async function searchByCityWay() {
     console.log("search by city way");
-    const city=Complete(searchcity.value,"市");
-    const way=searchway.value;
-    console.log("city:",city,"way:",way);
-    try{
-        const res=await fetch(`/api/timetable-D1?city=${city}&way=${way}&id='0'`);
-        if(!res.result){
-            showMessage("找不到数据", true);
+    const city = Complete(searchcity.value, "市");
+    const way = searchway.value;
+    console.log("city:", city, "way:", way);
+
+    try {
+        const res = await fetch(`/api/timetable-D1?city=${encodeURIComponent(city)}&way=${encodeURIComponent(way)}`);
+        if (!res.ok) {
+            const errData = await res.json().catch(() => ({ message: '请求失败' }));
+            showMessage(errData.message || errData.error || '请求失败', true);
             return;
         }
-        let msg;
-        const data=await res.json();
-        msg="城市："+data.result.CITY+"\n线路："+data.result.WAY+"\n起点："+data.result.START+"\n终点："+data.result.END+"\n备注："+data.result.SPECIAL+"\n主站->副站时刻表："+data.result.TIMEONE+"\n副站->主站时刻表："+data.result.TIMETWO+"\n执行时间："+data.result.STARTTIME+"\n写入时间："+data.result.WRITETIME+"\n作者："+data.result.WRITER;
-        console.log("data:",data,"\nmsg:",msg);
+
+        const json = await res.json();
+        if (!json.success || !json.data || json.data.length === 0) {
+            showMessage(json.message || '找不到数据', true);
+            return;
+        }
+
+        const item = json.data[0];   
+
+        const msg = `城市：${item.CITY}\n` +
+                    `线路：${item.WAY}\n` +
+                    `起点：${item.START}\n` +
+                    `终点：${item.END}\n` +
+                    `备注：${item.SPECIAL || '无'}\n` +
+                    `主站→副站：${item.TIMEONE}\n` +
+                    `副站→主站：${item.TIMETWO}\n` +
+                    `执行时间：${item.STARTTIME}\n` +
+                    `写入时间：${item.WRITERTIME}\n` +
+                    `作者：${item.WRITER}`;
+
+        console.log("查询成功:", msg);
         showMessage("搜索成功", false);
-        const inputvalue=await showPrompt({
-            text:"查询数据",
-            buttons:["关闭"],
-            button_style:['variant=success'],
-            input_is_area:true,
-            input_attrs:{readonly:true,value:msg}
-    });
-    }
-    catch(e){
-        console.log("error:",e);
+
+        await showPrompt({
+            text: "查询数据",
+            buttons: ["关闭"],
+            button_style: ['variant=success'],
+            input_is_area: true,
+            input_attrs: { readonly: true, value: msg }
+        });
+
+    } catch (e) {
+        console.error("请求异常:", e);
         showMessage("服务器错误", true);
     }
 }
