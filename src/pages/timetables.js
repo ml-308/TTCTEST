@@ -693,7 +693,7 @@ async function searchById(){
         const res=await fetch(`/api/timetable-D1?id=${id}&city='0'&way='0'`);
         let msg;
         const data=await res.json();
-        if(!data.results){
+        if(!data.result){
             showMessage("找不到数据", true);
             return;
         }
@@ -721,7 +721,7 @@ async function searchByCityWay(){
     console.log("city:",city,"way:",way);
     try{
         const res=await fetch(`/api/timetable-D1?city=${city}&way=${way}&id='0'`);
-        if(!res.results){
+        if(!res.result){
             showMessage("找不到数据", true);
             return;
         }
