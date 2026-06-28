@@ -108,11 +108,11 @@ function emailinput(){
     const emailin=email.value;
     const back=validateEmail(emailin);
     if(back!='邮箱格式正确'){
-        judge.email=1;
+        judge.email=0;
         msgout(email,emailmsg,0,emailin+back);
     }
     else{
-        judge.email=0;
+        judge.email=1;
         msgout(email,emailmsg,1,emailin+back);
         emailp(emailin,back);
     }
@@ -163,9 +163,9 @@ function passwordinput(){
         msgout(password,passwordmsg,0,'密码长度不能小于6位或大于16位');
     }
     else{
-        judge.pass=1;
+        judge.password=1;
         msgout(password,passwordmsg,1,'密码长度正确');
-        input.password=pass;
+        input.password=password;
     }
 }
 
@@ -178,7 +178,7 @@ function passwordconfirminput(){
     else{
         judge.passwordconfirm=1;
         msgout(passwordconfirm,passwordconfirmmsg,1,'两次密码输入一致');
-        input.passwordconfirm=pass;
+        input.passwordconfirm=passwordconfirm;
     }
 }
 
