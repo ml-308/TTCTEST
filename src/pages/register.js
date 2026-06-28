@@ -146,7 +146,7 @@ function passinput(){
         judge.pass=0;
         msgout(pass,passmsg,0,'您没有注册权限');
     }
-    if(passin==judge.key){
+    if(passin==input.key){
         judge.pass=1;
         msgout(pass,passmsg,1,'注册码正确');
     }
