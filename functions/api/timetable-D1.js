@@ -105,7 +105,7 @@ export async function onRequestGet({request,env}){
                 detail: err.message,   // ← 添加错误详情
                 stack: err.stack
             }), {
-                status: 500,
+                status: 504,
                 headers: { 'Content-Type': 'application/json' }
             });
         }
@@ -130,6 +130,7 @@ export async function onRequestGet({request,env}){
             stack: err.stack
         }), {
             status: 500,
+            headers: { 'Content-Type': 'application/json' }
     });
 }
 }
