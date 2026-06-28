@@ -658,14 +658,6 @@ async function writeD1(city,way,start,end,time1,time2,bc,etime,writetime,name){
             showMessage(resultn.message || '该时刻表已存在', true);
             return;
         }
-        let id;
-        let exists = true;
-        while (exists) {
-            id = generateSecure12Digit();
-            const existing = await env.DB.prepare('SELECT id FROM TIMETABLE WHERE id = ?').bind(id).first();
-            exists = !!existing;
-}
-
         const response = await fetch("/api/timetable-D1",{
             method:"POST",
             headers:{'Content-Type':"application/json"},
