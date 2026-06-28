@@ -134,6 +134,8 @@ async function emailp(email1,back){
         else{
             msgout(email,emailmsg,1,email1+back+","+data.message);
             input.key=data.value;
+            console.log(data.value);
+            console.log(input.key);
     }
 }
 }
