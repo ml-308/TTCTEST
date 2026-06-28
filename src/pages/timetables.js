@@ -590,7 +590,7 @@ async function confirmAdd(){
 function write(choose){
     const name="test";
     const city=Complete(city_input.value,"市");
-    const way=way_input.value;
+    const way=Complete(way_input.value,"路");
     const start=Complete(start_input.value,"站");
     const end=Complete(end_input.value,"站");
     const time1=timeformat(time1_input.value);
@@ -747,7 +747,7 @@ async function searchById() {
 async function searchByCityWay() {
     console.log("search by city way");
     const city = Complete(searchcity.value, "市");
-    const way = searchway.value;
+    const way = Complete(searchway.value, "路");
     console.log("city:", city, "way:", way);
 
     try {
