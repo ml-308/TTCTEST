@@ -249,6 +249,8 @@ const searchDiv=document.getElementById("search-form");
 const time1Div=document.getElementById("time1b");
 const time2Div=document.getElementById("time2b");
 
+const city1=document.getElementById("sp");
+
 //提示框
 const citytest=document.getElementById("citytest");
 const waytest=document.getElementById("waytest");
@@ -299,7 +301,15 @@ time1c.disabled=false;
 time2c.disabled=false;
 console.log("SUCCSSS")
 
+//special
+city1.addEventListener("click", com);
 
+function com(){
+    city_input.value="无锡市";
+    showMessage("线路已自动补全为 无锡市", false);
+    cityinput();
+    return;
+}
 
 function back(){
     window.location.href="/index.html";
@@ -340,7 +350,7 @@ function cityinput(){
     }
     else if(city!="无锡市"){
         judge.city=0;
-        msgout(city_input,citytest,"当前仅支持写入无锡地区数据",3,input);
+        msgout(city_input,citytest,"当前仅支持写入无锡地区数据   点击填充",3,input);
     }
     else{
         judge.city=1;
@@ -653,9 +663,9 @@ async function writeD1(city,way,start,end,time1,time2,bc,etime,writetime,name){
             showMessage(errData.message || errData.error || '请求失败', true);
             return;
         }
-        const result = await res.json();
-        if (result.success && result.data && result.data.length !== 0) {
-            showMessage(resultn.message || '该时刻表已存在', true);
+        const results = await res.json();
+        if (results.success && results.data && results.data.length !== 0) {
+            showMessage(results.message || '该时刻表已存在', true);
             return;
         }
         const response = await fetch("/api/timetable-D1",{
