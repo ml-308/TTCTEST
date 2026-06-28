@@ -33,20 +33,20 @@ function showMessage(msg, isError) {
 function msgout(input,inputmsg,judge,msg){
     if(judge==1){
         inputmsg.style.color="#1eff01";
-        inputmsgmsg.style.display="block";
-        inputmsgmsg.innerHTML=msg;
+        inputmsg.style.display="block";
+        inputmsg.innerHTML=msg;
         input.style.borderColor="#1eff01";
     }
     if(judge==0){
         inputmsg.style.color="#ff0000";
-        inputmsgmsg.style.display="block";
-        inputmsgmsg.innerHTML=msg;
+        inputmsg.style.display="block";
+        inputmsg.innerHTML=msg;
         input.style.borderColor="#ff0000";
     }
     if(judge==2){
         inputmsg.style.color="#ffd20a";
-        inputmsgmsg.style.display="block";
-        inputmsgmsg.innerHTML=msg;
+        inputmsg.style.display="block";
+        inputmsg.innerHTML=msg;
         input.style.borderColor="#ffd20a";
     }
 }
