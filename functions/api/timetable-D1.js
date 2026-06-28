@@ -87,6 +87,7 @@ export async function onRequestGet({request,env}){
         return new Response(JSON.stringify({error: "error id"}), {status: 400});
     }
     if(id){
+        console.log("ID");
         try{
             const result=await env.mlttcd.prepare(
                 `SELECT * FROM TIMETABLE WHERE ID=?`
@@ -110,6 +111,7 @@ export async function onRequestGet({request,env}){
         }
     }
     if(city && way){
+        console.log("city and way");
     try{
         const result=await env.mlttcd.prepare(
             `SELECT * FROM TIMETABLE WHERE CITY=? AND WAY=?`
