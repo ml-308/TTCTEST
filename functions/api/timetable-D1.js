@@ -82,7 +82,7 @@ export async function onRequestPost({ request, env }) {
     // ----- 插入数据 -----
     try {
         await env.mlttcd.prepare(`
-            INSERT INTO TIMETABLE (ID, CITY, WAY, START, END, SPECIAL, TIMEONE, TIMETWO, STARTTIME, WRITER, WRITERTIME, PASSER)
+            INSERT INTO TIMETABLE (ID, CITY, WAY, START, END, SPECIAL, TIMEONE, TIMETWO, STARTTIME, WRITER, WRITETIME, PASSER)
             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)
         `).bind(
             id,
