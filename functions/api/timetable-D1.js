@@ -86,7 +86,7 @@ export async function onRequestGet({request,env}){
     if(!id || typeof id !== "string" || id.trim().length === 0){
         return new Response(JSON.stringify({error: "error id"}), {status: 400});
     }
-    if(id!=0){
+    if(id){
         try{
             const result=await env.mlttcd.prepare(
                 `SELECT * FROM TIMETABLE WHERE ID=?`
@@ -109,7 +109,7 @@ export async function onRequestGet({request,env}){
             });
         }
     }
-
+    if(city && way){
     try{
         const result=await env.mlttcd.prepare(
             `SELECT * FROM TIMETABLE WHERE CITY=? AND WAY=?`
@@ -126,4 +126,6 @@ export async function onRequestGet({request,env}){
             status: 500,
     });
 }
+}
+    return new Response(JSON.stringify({success:false,message:"error"}), {status: 400});
 }
