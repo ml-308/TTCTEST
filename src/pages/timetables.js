@@ -601,8 +601,21 @@ async function confirmAdd(){
     addDiv.classList.add("hidden");
 }
 
+async function getUsername() {
+  const res = await fetch('/api/profile', { credentials: 'include' });
+  if (res.ok) {
+    const data = await res.json();
+    const user = data.user || data;
+    return user.email;
+  }
+  return null;
+}
+
 function write(choose){
-    const name="test";
+    const name=getUsername();
+    if(!name){
+        showMessage("请先登录", true);
+    }
     const city=Complete(city_input.value,"市");
     const way=Complete(way_input.value,"路");
     const start=Complete(start_input.value,"站");
