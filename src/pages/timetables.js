@@ -214,13 +214,6 @@ function showMessage(msg, isError) {
   }
 }
 
-//生成12位随机字符串
-function generateSecure12Digit() {
-  const array = new BigUint64Array(1);
-  crypto.getRandomValues(array);
-  const num = array[0] % 900000000000n + 100000000000n;
-  return num.toString();
-}
 
 //按钮
 const backa=document.getElementById("back");
@@ -635,57 +628,47 @@ function write(choose){
     }
 }
 
-async function writeD1(city,way,start,end,time1,time2,bc,etime,writetime,name){
-    let id;
-    let exists = true;
-    while (exists) {
-        id = generateSecure12Digit();
-        const re=await fetch(`/api/timetable-D1?id=${encodeURIComponent(id)}`);
-        if (!re.ok) {
-            const errData = await re.json().catch(() => ({ message: '请求失败' }));
-            showMessage(errData.message || errData.error || '请求失败', true);
-            return;
-        }
-        const existing = await re.json();
-        if(existing && existing.length !== 0&&existing.success){
-            continue;
-        }
-        exists = !!existing;
-    }
-    const data={
-    "id":id,
-    "city":city,
-    "way":way,
-    "start":start,
-    "end":end,
-    "special":bc,
-    "time1":time1,
-    "time2":time2,
-    "etime":etime,
-    "writetime":writetime,
-    "writer":name
-}
-    console.log("data:",city," ",way," ",start," ",end," ",time1," ",time2," ",bc," ",etime," ",writetime," ",name);
-    const res=await fetch(`/api/timetable-D1?city=${encodeURIComponent(city)}&way=${encodeURIComponent(way)}`);
-        if (!res.ok) {
-            const errData = await res.json().catch(() => ({ message: '请求失败' }));
-            showMessage(errData.message || errData.error || '请求失败', true);
-            return;
-        }
-        const results = await res.json();
-        if (results.success && results.data && results.data.length !== 0) {
-            showMessage(results.message || '该时刻表已存在', true);
-            return;
-        }
-        const response = await fetch("/api/timetable-D1",{
-            method:"POST",
-            headers:{'Content-Type':"application/json"},
-            body:JSON.stringify(data)
+async function writeD1(city, way, start, end, time1, time2, bc, etime, writetime, name) {
+    // 构造数据，不再包含 id，由后端生成
+    const data = {
+        city,
+        way,
+        start,
+        end,
+        special: bc || '',          // 备注，可能为空
+        time1,
+        time2,
+        etime,
+        writetime,
+        writer: name
+    };
+
+    console.log('提交数据:', data);
+
+    try {
+        const response = await fetch('/api/timetable-D1', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
         });
 
         const result = await response.json();
-        console.log("back:",result);
+
+        if (!response.ok) {
+            // 409：重复 或 400：参数错误 等
+            const msg = result.message || result.error || '提交失败';
+            showMessage(msg, true);
+            return;
         }
+
+        console.log('添加成功，ID:', result.id);
+        showMessage('添加成功', false);
+        // 可以在这里刷新列表等
+    } catch (err) {
+        console.error(err);
+        showMessage('网络错误', true);
+    }
+}
 
 //search
 //btn
