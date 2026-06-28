@@ -105,16 +105,16 @@ let input={
 
 //function
 function emailinput(){
-    const email=email.value;
-    const back=validateEmail(email);
+    const emailin=email.value;
+    const back=validateEmail(emailin);
     if(back!='邮箱格式正确'){
         judge.email=1;
-        msgout(email,emailmsg,0,email+back);
-        emailp(email);
+        msgout(email,emailmsg,0,emailin+back);
+        emailp(emailin);
     }
     else{
         judge.email=0;
-        msgout(email,emailmsg,1,email+back);
+        msgout(email,emailmsg,1,emailin+back);
     }
 
 }
@@ -141,12 +141,12 @@ async function emailp(email1){
 }
 
 function passinput(){
-    const pass=pass.value;
+    const passin=pass.value;
     if(input.key==""){
         judge.pass=0;
         msgout(pass,passmsg,0,'您没有注册权限');
     }
-    if(pass==judeg.key){
+    if(passin==judeg.key){
         judge.pass=1;
         msgout(pass,passmsg,1,'注册码正确');
     }
