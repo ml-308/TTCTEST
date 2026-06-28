@@ -723,7 +723,7 @@ async function searchById() {
                     `主站→副站：${item.TIMEONE}\n` +
                     `副站→主站：${item.TIMETWO}\n` +
                     `执行时间：${item.STARTTIME}\n` +
-                    `写入时间：${item.WRITERTIME}\n` +
+                    `写入时间：${item.WRITETIME}\n` +
                     `作者：${item.WRITER}`;
 
         console.log("查询成功:", msg);
@@ -774,7 +774,7 @@ async function searchByCityWay() {
                     `主站→副站：${item.TIMEONE}\n` +
                     `副站→主站：${item.TIMETWO}\n` +
                     `执行时间：${item.STARTTIME}\n` +
-                    `写入时间：${item.WRITERTIME}\n` +
+                    `写入时间：${item.WRITETIME}\n` +
                     `作者：${item.WRITER}`;
 
         console.log("查询成功:", msg);
