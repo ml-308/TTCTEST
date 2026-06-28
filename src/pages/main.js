@@ -1,21 +1,33 @@
+// 等待 DOM 完全加载，确保所有元素存在
+document.addEventListener('DOMContentLoaded', () => {
+  // 获取元素，如果不存在则跳过（避免报错）
+  const globalLoginBtn = document.getElementById('globalLoginBtn');
+  const globalLogoutBtn = document.getElementById('globalLogoutBtn');
+  const loginModalBtn = document.getElementById('login-btn');      // 弹窗中的“登录”按钮
+  const closeBtn = document.getElementById('close_login_btn');
+  const usernameInput = document.getElementById('username');
+  const passwordInput = document.getElementById('password');
+  const globalLoginModal = document.getElementById('globalLoginModal');
+  const userInfoDiv = document.getElementById('globalUserInfo');
+  const displayName = document.getElementById('globalDisplayName');
 
-const globalLoginBtn = document.getElementById('globalLoginBtn');
-const globalLogoutBtn = document.getElementById('globalLogoutBtn');
-const loginModalBtn = document.getElementById('login-btn'); // 提交登录按钮
-const closeBtn = document.getElementById('close_login_btn');
-const usernameInput = document.getElementById('username');
-const passwordInput = document.getElementById('password');
-const globalLoginModal = document.getElementById('globalLoginModal');
-const loginsuccess = document.getElementById('globalUserInfo');
-const displayName = document.getElementById('globalDisplayName');
+  // 安全绑定事件（仅当元素存在时）
+  if (globalLoginBtn) {
+    globalLoginBtn.addEventListener('click', loginshow);
+  }
+  if (loginModalBtn) {
+    loginModalBtn.addEventListener('click', login);
+  }
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeLogin);
+  }
+  if (globalLogoutBtn) {
+    globalLogoutBtn.addEventListener('click', logout);
+  }
+});
 
+// ================== 工具函数 ==================
 
-globalLoginBtn.addEventListener('click', loginshow);
-loginModalBtn.addEventListener('click', login);
-closeBtn.addEventListener('click', closeLogin);
-
-
-//showmsg
 function showMessage(msg, isError) {
   const box = document.getElementById('errormsg');
   if (box) {
@@ -29,8 +41,7 @@ function showMessage(msg, isError) {
   popup.style.backgroundColor = isError ? '#f44336' : '#4CAF50';
   document.body.appendChild(popup);
   setTimeout(() => popup.remove(), 2000);
-  
-  // 注入动画关键帧（仅一次）
+
   if (!document.getElementById('showMsgAnimStyles')) {
     const styleSheet = document.createElement('style');
     styleSheet.id = 'showMsgAnimStyles';
@@ -46,7 +57,6 @@ function showMessage(msg, isError) {
   }
 }
 
-
 function validateEmail(value) {
   const email = value.trim();
   if (!email) return '邮箱不能为空';
@@ -55,27 +65,47 @@ function validateEmail(value) {
   return '邮箱格式正确';
 }
 
+// ================== 界面控制 ==================
 
 function loginshow() {
-  globalLoginModal.style.display = 'block';
-  globalLoginBtn.style.display = 'none';
-  globalLogoutBtn.style.display = 'none';
-  closeBtn.style.display = 'block';
+  const modal = document.getElementById('globalLoginModal');
+  const loginBtn = document.getElementById('globalLoginBtn');
+  const logoutBtn = document.getElementById('globalLogoutBtn');
+  const closeBtn = document.getElementById('close_login_btn');
+  if (modal) modal.style.display = 'block';
+  if (loginBtn) loginBtn.style.display = 'none';
+  if (logoutBtn) logoutBtn.style.display = 'none';
+  if (closeBtn) closeBtn.style.display = 'block';
 }
 
+function closeLogin() {
+  const modal = document.getElementById('globalLoginModal');
+  const loginBtn = document.getElementById('globalLoginBtn');
+  const logoutBtn = document.getElementById('globalLogoutBtn');
+  const closeBtn = document.getElementById('close_login_btn');
+  if (modal) modal.style.display = 'none';
+  if (loginBtn) loginBtn.style.display = 'block';
+  if (logoutBtn) logoutBtn.style.display = 'none';
+  if (closeBtn) closeBtn.style.display = 'none';
+}
+
+// ================== 登录逻辑 ==================
 
 function login(e) {
-  e.preventDefault(); 
-  const email = usernameInput.value.trim();
-  const password = passwordInput.value;
+  e.preventDefault();
+  const email = document.getElementById('username')?.value.trim();
+  const password = document.getElementById('password')?.value;
+  if (!email || !password) {
+    showMessage('请输入邮箱和密码', true);
+    return;
+  }
   const msg = validateEmail(email);
   if (msg === '邮箱格式正确') {
-    loginread(email, password); 
+    loginread(email, password);
   } else {
     showMessage(msg, true);
   }
 }
-
 
 async function loginread(email, password) {
   try {
@@ -85,25 +115,34 @@ async function loginread(email, password) {
       body: JSON.stringify({ email, password }),
       credentials: 'include'
     });
-
     const data = await res.json();
     if (!res.ok || !data.success) {
       showMessage(data.message || '登录失败', true);
       return;
     }
-
-
-    const user = await fetchUserInfo();
-    if (user) {
-      displayName.textContent = user.email; 
-      loginsuccess.textContent = '登录成功';
-      globalLoginModal.style.display = 'none';
-      globalLoginBtn.style.display = 'none';
-      globalLogoutBtn.style.display = 'block';
-      closeBtn.style.display = 'none';
-    }
+    // 登录成功，获取用户信息并更新界面
+    await updateUIAfterLogin();
   } catch (err) {
     showMessage('网络错误', true);
+  }
+}
+
+async function updateUIAfterLogin() {
+  const user = await fetchUserInfo();
+  if (user) {
+    const loginBtn = document.getElementById('globalLoginBtn');
+    const logoutBtn = document.getElementById('globalLogoutBtn');
+    const userInfoDiv = document.getElementById('globalUserInfo');
+    const displayName = document.getElementById('globalDisplayName');
+    const modal = document.getElementById('globalLoginModal');
+    const closeBtn = document.getElementById('close_login_btn');
+
+    if (displayName) displayName.textContent = user.email || '用户';
+    if (loginBtn) loginBtn.style.display = 'none';
+    if (logoutBtn) logoutBtn.style.display = 'block';
+    if (userInfoDiv) userInfoDiv.style.display = 'block';
+    if (modal) modal.style.display = 'none';
+    if (closeBtn) closeBtn.style.display = 'none';
   }
 }
 
@@ -111,7 +150,8 @@ async function fetchUserInfo() {
   try {
     const res = await fetch('/api/profile', { credentials: 'include' });
     if (res.ok) {
-      return await res.json();
+      const data = await res.json();
+      return data.user || data;  // 适配不同返回格式
     }
     return null;
   } catch {
@@ -119,12 +159,9 @@ async function fetchUserInfo() {
   }
 }
 
+// ================== 退出登录 ==================
 
-function closeLogin() {
-  globalLoginModal.style.display = 'none';
-  globalLoginBtn.style.display = 'block';
-  globalLogoutBtn.style.display = 'none';
-  closeBtn.style.display = 'none';
+async function logout() {
+  await fetch('/api/logout', { credentials: 'include' });
+  window.location.href = '/login.html';
 }
-
-
