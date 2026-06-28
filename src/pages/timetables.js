@@ -312,6 +312,8 @@ console.log("SUCCSSS")
 //special
 city1.addEventListener("click", com);
 
+fetchUserInfo();
+
 function com(){
     city_input.value="无锡市";
     showMessage("线路已自动补全为 无锡市", false);
