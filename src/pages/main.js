@@ -109,7 +109,7 @@ function login(e) {
 
 async function loginread(email, password) {
   try {
-    const res = await fetch('/api/login', {
+    const res = await fetch('/api/login-D1', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
@@ -162,6 +162,6 @@ async function fetchUserInfo() {
 // ================== 退出登录 ==================
 
 async function logout() {
-  await fetch('/api/logout', { credentials: 'include' });
+  await fetch('/api/logout-D1', { credentials: 'include' });
   window.location.href = '/login.html';
 }

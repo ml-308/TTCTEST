@@ -16,7 +16,7 @@ async function checkAuth() {
 
 // 退出登录
 async function logout() {
-  await fetch('/api/logout', { credentials: 'include' });
+  await fetch('/api/logout-D1', { credentials: 'include' });
   window.location.href = '/login.html';
 }
 
