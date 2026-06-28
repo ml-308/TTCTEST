@@ -192,9 +192,9 @@ function refisterbtnclick(){
         console.log('error');
         return;
     }
-    const email=email.value;
-    const password=password.value;
-    writeD1(email,password);
+    const emaili=email.value;
+    const passwordi=password.value;
+    writeD1(emaili,passwordi);
 }
 
 async function writeD1(email,password){
