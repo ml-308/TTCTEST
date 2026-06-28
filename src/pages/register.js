@@ -125,12 +125,10 @@ async function emailp(email1){
     const re=await fetch(`/api/register-D1?email=${email1}`);
     const dat=await re.json();
     if(!re.ok){
-        const dat=await re.json();
         msgout(email,emailmsg,0,email1+back+","+dat.message);
     }
     else{
         if(!res.ok){        
-        const dat=await res.json();
         msgout(email,emailmsg,data.way,email1+back+","+dat.message);
     }
         else{
@@ -199,11 +197,9 @@ async function writeD1(email,password){
     const res=await fetch(`/api/register-D1?email=${email}&password=${password}`);
     const data=await res.json();
     if(!res.ok){
-        const dat=await res.json();
         showMessage(dat.message,1);
     }
     else{
-        const dat=await res.json();
         showMessage(dat.message,0);
         window.location.href='index.html';
     }
