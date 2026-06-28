@@ -114,12 +114,12 @@ function emailinput(){
     else{
         judge.email=0;
         msgout(email,emailmsg,1,emailin+back);
-        emailp(emailin);
+        emailp(emailin,back);
     }
 
 }
 
-async function emailp(email1){
+async function emailp(email1,back){
     const res=await fetch(`/api/KV?key=${email1}`);
     const data=await res.json();
     const re=await fetch(`/api/register-D1?email=${email1}`);
