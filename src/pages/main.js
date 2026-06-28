@@ -198,33 +198,3 @@ async function logout() {
   window.location.href = '/login.html';
 }
 
-// 目标时间：2028年6月7日 00:00:00（月份从0开始，5代表6月）
-const targetDate = new Date(2028, 5, 7, 0, 0, 0);
-
-// 倒计时更新函数
-function updateCountdown() {
-  const now = new Date();
-  const diff = targetDate - now; // 毫秒差
-
-  if (diff <= 0) {
-    // 倒计时结束，显示提示并停止定时器（可选）
-    document.getElementById('countdown').textContent = '🎉 高考已开始！';
-    return;
-  }
-
-  // 计算天、时、分、秒
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-  // 格式化输出（补零）
-  const display = `${days}天 ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-
-  document.getElementById('time').textContent = display;
-}
-
-// 立即执行一次，避免首屏空白
-updateCountdown();
-// 每秒更新
-setInterval(updateCountdown, 1000);
