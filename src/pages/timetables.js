@@ -157,6 +157,12 @@ function msgout(input,test,msg,judge){
         test.innerHTML=msg;
         test.style.display="none";
     }
+    if(judge==3){
+        console.log("msg--3");
+        input.style.borderColor='#f3f30e';
+        test.style.color='#f3f30e';
+        test.innerHTML=msg;
+    }
 }
 
 //clean
@@ -209,10 +215,11 @@ function showMessage(msg, isError) {
 }
 
 //生成12位随机字符串
-function generate12DigitString() {
-  return Array.from(crypto.getRandomValues(new Uint8Array(12)))
-    .map(byte => byte % 10)
-    .join('');
+function generateSecure12Digit() {
+  const array = new BigUint64Array(1);
+  crypto.getRandomValues(array);
+  const num = array[0] % 900000000000n + 100000000000n;
+  return num.toString();
 }
 
 //按钮
@@ -330,6 +337,10 @@ function cityinput(){
     if(city==null){
         judge.city=0;
         msgout(city_input,citytest,"请输入城市",0,input);
+    }
+    else if(city!="无锡市"){
+        judge.city=0;
+        msgout(city_input,citytest,"当前仅支持写入无锡地区数据",3,input);
     }
     else{
         judge.city=1;
@@ -615,20 +626,46 @@ function write(choose){
 }
 
 async function writeD1(city,way,start,end,time1,time2,bc,etime,writetime,name){
-            const data={
-            "id":generate12DigitString(),
-            "city":city,
-            "way":way,
-            "start":start,
-            "end":end,
-            "special":bc,
-            "time1":time1,
-            "time2":time2,
-            "etime":etime,
-            "writetime":writetime,
-            "writer":name
-        };
-        console.log("data:",city," ",way," ",start," ",end," ",time1," ",time2," ",bc," ",etime," ",writetime," ",name);
+    let id;
+    let exists = true;
+    while (exists) {
+        id = generateSecure12Digit();
+        const existing = await env.DB.prepare('SELECT id FROM TIMETABLE WHERE id = ?').bind(id).first();
+        exists = !!existing;
+    }
+    const data={
+    "id":id,
+    "city":city,
+    "way":way,
+    "start":start,
+    "end":end,
+    "special":bc,
+    "time1":time1,
+    "time2":time2,
+    "etime":etime,
+    "writetime":writetime,
+    "writer":name
+}
+    console.log("data:",city," ",way," ",start," ",end," ",time1," ",time2," ",bc," ",etime," ",writetime," ",name);
+    const res=await fetch(`/api/timetable-D1?id=${encodeURIComponent(city)}&way=${encodeURIComponent(way)}`);
+        if (!res.ok) {
+            const errData = await res.json().catch(() => ({ message: '请求失败' }));
+            showMessage(errData.message || errData.error || '请求失败', true);
+            return;
+        }
+        const result = await res.json();
+        if (result.success && result.data && result.data.length !== 0) {
+            showMessage(resultn.message || '该时刻表已存在', true);
+            return;
+        }
+        let id;
+        let exists = true;
+        while (exists) {
+            id = generateSecure12Digit();
+            const existing = await env.DB.prepare('SELECT id FROM TIMETABLE WHERE id = ?').bind(id).first();
+            exists = !!existing;
+}
+
         const response = await fetch("/api/timetable-D1",{
             method:"POST",
             headers:{'Content-Type':"application/json"},
@@ -685,13 +722,6 @@ function searchbtnClick(){
     }
 }
 
-async function searchById(){
-    console.log("search by id");
-    const id=searchid.value;
-    if(id.length!=12){
-        showMessage("id错误", true);
-        return;
-    }
 async function searchById() {
     console.log("search by id");
     const id = searchid.value.trim();
@@ -745,7 +775,7 @@ async function searchById() {
         showMessage("服务器错误", true);
     }
 }
-}
+
 
 async function searchByCityWay() {
     console.log("search by city way");
