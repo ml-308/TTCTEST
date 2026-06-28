@@ -196,6 +196,7 @@ function refisterbtnclick(){
 }
 
 async function writeD1(email,password){
+    console.log('writeD1');
     const res = await fetch('/api/register-D1', {
         method: 'POST',
         heaers: { 'Content-Type': 'application/json' },
@@ -211,5 +212,6 @@ async function writeD1(email,password){
     }
     else{
         showMessage(dat.message,0);
+        window.location.href='index.html';
     }
 }
