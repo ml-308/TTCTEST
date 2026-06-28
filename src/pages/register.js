@@ -110,11 +110,11 @@ function emailinput(){
     if(back!='邮箱格式正确'){
         judge.email=1;
         msgout(email,emailmsg,0,emailin+back);
-        emailp(emailin);
     }
     else{
         judge.email=0;
         msgout(email,emailmsg,1,emailin+back);
+        emailp(emailin);
     }
 
 }
