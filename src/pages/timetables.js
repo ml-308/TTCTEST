@@ -635,10 +635,10 @@ async function writeD1(city, way, start, end, time1, time2, bc, etime, writetime
         "way": way,
         "start": start,
         "end": end,
-        "timeone": time1,
-        "timetwo": time2,
-        "bc": bc,
-        "starttime": etime,
+        "time1": time1,
+        "time2": time2,
+        "special": bc,
+        "etime": etime,
         "writetime": writetime,
         "writer": name
     };
