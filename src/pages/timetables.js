@@ -631,16 +631,16 @@ function write(choose){
 async function writeD1(city, way, start, end, time1, time2, bc, etime, writetime, name) {
     // 构造数据，不再包含 id，由后端生成
     const data = {
-        city,
-        way,
-        start,
-        end,
-        special: bc || '',          // 备注，可能为空
-        time1,
-        time2,
-        etime,
-        writetime,
-        writer: name
+        "city": city,
+        "way": way,
+        "start": start,
+        "end": end,
+        "timeone": time1,
+        "timetwo": time2,
+        "bc": bc,
+        "starttime": etime,
+        "writetime": writetime,
+        "writer": name
     };
 
     console.log('提交数据:', data);

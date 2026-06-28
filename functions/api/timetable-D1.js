@@ -115,3 +115,67 @@ export async function onRequestPost({ request, env }) {
         });
     }
 }
+
+//Get
+export async function onRequestGet({request,env}){
+    const url=new URL(request.url);
+    const city=url.searchParams.get("city");
+    const way=url.searchParams.get("way");
+    const id=url.searchParams.get("id");
+  if (id && id !== '0') {
+    console.log("按 ID 查询");
+    try {
+      const { results } = await env.mlttcd.prepare(
+        'SELECT * FROM TIMETABLE WHERE ID = ?'
+      ).bind(id.trim()).all();
+
+      if (results.length === 0) {
+        return new Response(JSON.stringify({
+          success: false,
+          message: '未找到该记录'
+        }), { status: 404, headers: { 'Content-Type': 'application/json' } });
+      }
+
+      return new Response(JSON.stringify({
+        success: true,
+        data: results[0]          
+      }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    } catch (err) {
+      return new Response(JSON.stringify({ error: '服务器内部错误' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  }
+
+  if (city && city !== '0' && way && way !== '0') {
+    console.log("按城市+线路查询");
+    try {
+      const { results } = await env.mlttcd.prepare(
+        'SELECT * FROM TIMETABLE WHERE CITY = ? AND WAY = ?'
+      ).bind(city.trim(), way.trim()).all();
+
+      if (results.length === 0) {
+        return new Response(JSON.stringify({
+          success: false,
+          message: '未找到符合条件的时刻表'
+        }), { status: 404, headers: { 'Content-Type': 'application/json' } });
+      }
+
+      return new Response(JSON.stringify({
+        success: true,
+        data: results      
+      }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    } catch (err) {
+      return new Response(JSON.stringify({ error: '服务器内部错误' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  }
+
+  return new Response(JSON.stringify({
+    success: false,
+    message: '请提供 id 或 city+way 参数'
+  }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+}
