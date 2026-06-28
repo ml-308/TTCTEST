@@ -210,10 +210,10 @@ async function writeD1(email,password){
     const data=await res.json();
     console.log(data);
     if(!res.ok){
-        showMessage(dat.message,1);
+        showMessage(data.message,1);
     }
     else{
-        showMessage(dat.message,0);
+        showMessage(data.message,0);
         window.location.href='index.html';
     }
 }
