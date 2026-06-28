@@ -86,7 +86,7 @@ export async function onRequestGet({request,env}){
     if(!id || typeof id !== "string" || id.trim().length === 0){
         return new Response(JSON.stringify({error: "error id"}), {status: 400});
     }
-    if(id){
+    if(id!='0'){
         console.log("ID");
         try{
             const result=await env.mlttcd.prepare(
@@ -105,7 +105,7 @@ export async function onRequestGet({request,env}){
             });
         }
     }
-    if(city && way){
+    if(city!='0' && way!='0'){
         console.log("city and way");
     try{
         const result=await env.mlttcd.prepare(

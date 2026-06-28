@@ -691,12 +691,6 @@ async function searchById(){
     }
     try{
         const res=await fetch(`/api/timetable-D1?id=${id}&city='0'&way='0'`);
-        if(res.status==500){
-            const errData = await res.json().catch(() => ({}));
-            console.log("error:",errData.detail);
-            showMessage("找不到数据", true);
-            return;
-        }
         let msg;
         const data=await res.json();
         if(!data.results){
