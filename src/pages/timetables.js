@@ -588,7 +588,7 @@ async function confirmAdd() {
     time1c.removeEventListener("click", time1cl);
     time2c.removeEventListener("click", time2cl);
     clean.removeEventListener("click", cleanall);
-    let msg=write(1);
+    let msg=write(1,name);
     console.log(msg);
     console.log("msgout--1");
     /*
