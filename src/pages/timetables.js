@@ -553,15 +553,13 @@ function cleanall(){
     time2cl();
 }
 
-async function GETNAME(){
-     fetchUserInfo();
-
-}
-
-async function confirmAdd(){
-    GETNAME();
-    if(name==null){
-        showMessage("请登录", true);
+async function confirmAdd() {
+    const name = await fetch('/api/profile', { credentials: 'include' })
+    .then(r => r.ok ? r.json() : null)
+    .then(data => data?.user?.email || data?.email || '')
+    .catch(() => '');
+    if(!name){
+        showMessage("请先登录", true);
         return;
     }
     cityinput();
@@ -620,7 +618,7 @@ async function confirmAdd(){
     }
     console.log("pass");
     showMessage("添加成功", false);
-    write(2);
+    write(2,name);
     cleanall();
     addDiv.classList.add("hidden");
 }
@@ -628,7 +626,7 @@ async function confirmAdd(){
 
 
 
-async function write(choose){
+async function write(choose,name){
     const city=Complete(city_input.value,"市");
     const way=Complete(way_input.value,"路");
     const start=Complete(start_input.value,"站");
