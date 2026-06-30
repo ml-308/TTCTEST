@@ -196,6 +196,7 @@ async function fetchUserInfo() {
 
 async function logout() {
   await fetch('/api/logout-D1', { credentials: 'include' });
+  closeLogin();
   showMessage('已退出登录', true);
 }
 
