@@ -554,6 +554,11 @@ function cleanall(){
 }
 
 async function confirmAdd(){
+    const name=await fetchUserInfo();
+    if(name==null){
+        showMessage("请先登录", true);
+        return;
+    }
     cityinput();
     wayinput();
     startinput();
@@ -619,11 +624,6 @@ async function confirmAdd(){
 
 
 async function write(choose){
-    const name=await fetchUserInfo();
-    if(name==null){
-        showMessage("请先登录", true);
-        return;
-    }
     const city=Complete(city_input.value,"市");
     const way=Complete(way_input.value,"路");
     const start=Complete(start_input.value,"站");
