@@ -626,7 +626,7 @@ async function confirmAdd() {
 
 
 
-async function write(choose,name){
+function write(choose,name){
     const city=Complete(city_input.value,"市");
     const way=Complete(way_input.value,"路");
     const start=Complete(start_input.value,"站");
