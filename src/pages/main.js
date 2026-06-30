@@ -152,6 +152,7 @@ async function loginread(email, password) {
       showMessage(data.message || '登录失败', true);
       return;
     }
+    showMessage('登录成功', false);
     // 登录成功，获取用户信息并更新界面
     await updateUIAfterLogin();
   } catch (err) {
@@ -195,6 +196,6 @@ async function fetchUserInfo() {
 
 async function logout() {
   await fetch('/api/logout-D1', { credentials: 'include' });
-  window.location.href = '/login.html';
+  showMessage('已退出登录', true);
 }
 
