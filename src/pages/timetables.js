@@ -1,5 +1,4 @@
 import { showConfirm, showPrompt } from '/lib/ui/popup.mjs';
-let name;
 /*
 class HcwArticle extends HTMLElement{
     constructor(){
@@ -312,8 +311,6 @@ console.log("SUCCSSS")
 //special
 city1.addEventListener("click", com);
 
-fetchUserInfo();
-
 function com(){
     city_input.value="无锡市";
     showMessage("线路已自动补全为 无锡市", false);
@@ -557,12 +554,6 @@ function cleanall(){
 }
 
 async function confirmAdd(){
-    fetchUserInfo();
-    const name1=name;
-    if(name1==null){
-        showMessage("请先登录", true);
-        return;
-    }
     cityinput();
     wayinput();
     startinput();
@@ -627,10 +618,9 @@ async function confirmAdd(){
 
 
 
-function write(choose){
-    fetchUserInfo();
-    const name1=name;
-    if(name1==null){
+async function write(choose){
+    const name=await fetchUserInfo();
+    if(name==null){
         showMessage("请先登录", true);
         return;
     }
