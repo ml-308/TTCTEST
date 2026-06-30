@@ -68,7 +68,7 @@ class HcwBodyHeader extends HTMLElement{
 }
 */
 
-let time1in,time2in;
+let time1in,time2in,name=null;
 
 async function fetchUserInfo() {
   try {
@@ -553,10 +553,15 @@ function cleanall(){
     time2cl();
 }
 
+async function GETNAME(){
+     fetchUserInfo();
+
+}
+
 async function confirmAdd(){
-    const name=await fetchUserInfo();
+    GETNAME();
     if(name==null){
-        showMessage("请先登录", true);
+        showMessage("请登录", true);
         return;
     }
     cityinput();
@@ -640,12 +645,12 @@ async function write(choose){
     console.log(writetime);
     let msg="";
     if(choose==1){
-        msg="城市："+city+"\n线路："+way+"\n起点："+start+"\n终点："+end+"\n主站->副站时刻表："+time1+"\n副站->主站时刻表："+time2+"\n执行时间："+e_time+"\n"+"写入时间："+writetime+"\n作者:"+name1;
+        msg="城市："+city+"\n线路："+way+"\n起点："+start+"\n终点："+end+"\n主站->副站时刻表："+time1+"\n副站->主站时刻表："+time2+"\n执行时间："+e_time+"\n"+"写入时间："+writetime+"\n作者:"+name;
         return msg;
     }
     if(choose==2){
         console.log("data:",city);
-        writeD1(city,way,start,end,time1,time2,bc,e_time,writetime,name1);
+        writeD1(city,way,start,end,time1,time2,bc,e_time,writetime,name);
     }
 }
 
